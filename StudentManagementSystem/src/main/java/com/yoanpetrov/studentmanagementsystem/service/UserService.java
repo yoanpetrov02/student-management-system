@@ -34,8 +34,8 @@ public class UserService {
         User existingUser = user.get();
         existingUser.setFirstName(userDetails.getFirstName());
         existingUser.setLastName(userDetails.getLastName());
-        existingUser.setLastName(userDetails.getLastName());
-        existingUser.setPassword(userDetails.getPassword());
+        existingUser.setEmail(userDetails.getEmail());
+        existingUser.setPass(userDetails.getPass());
         existingUser.setRole(userDetails.getRole());
 
         return repository.save(existingUser);
