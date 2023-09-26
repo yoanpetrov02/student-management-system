@@ -1,11 +1,13 @@
 package com.yoanpetrov.studentmanagementsystem.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Set;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Getter
 @Setter
 @Entity
@@ -13,14 +15,18 @@ import java.util.Set;
 public class Course {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int courseId;
+    @GeneratedValue
+    private Long courseId;
+
+    @Column(nullable = false, length = 100)
+    private String name;
+    @Column
+    private String description;
+    @Column(nullable = false)
+    private int maxCapacity;
+    @Column(nullable = false)
+    private int numberOfStudents;
 
     @OneToMany(mappedBy = "course") // it is mapped by the course field in StudentCourseEnrollment
-    Set<StudentCourseEnrollment> studentEnrollments;
-
-    private String name;
-    private String description;
-    private int maxCapacity;
-    private int numberOfStudents;
+    private Set<StudentCourseEnrollment> studentEnrollments;
 }

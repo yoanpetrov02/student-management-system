@@ -26,12 +26,12 @@ public class CourseController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Course> getCourseById(@PathVariable int id) {
+    public Optional<Course> getCourseById(@PathVariable Long id) {
         return courseService.getCourseById(id);
     }
 
     @PutMapping("/{id}")
-    public Course updateCourse(@PathVariable int id, @RequestBody Course courseDetails) {
+    public Course updateCourse(@PathVariable Long id, @RequestBody Course courseDetails) {
         return courseService.updateCourse(id, courseDetails);
     }
 
@@ -42,7 +42,7 @@ public class CourseController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteCourse(@PathVariable int id) {
+    public void deleteCourse(@PathVariable Long id) {
         courseService.deleteCourse(id);
     }
 }

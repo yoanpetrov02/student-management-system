@@ -11,16 +11,16 @@ import lombok.Setter;
 public class StudentCourseEnrollment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int enrollmentId;
+    @GeneratedValue
+    private Long enrollmentId;
 
     @ManyToOne
     @MapsId("userId")
     @JoinColumn(name = "user_id")
-    User user;
+    private User user;
 
     @ManyToOne
     @MapsId("courseId")
     @JoinColumn(name = "course_id")
-    Course course;
+    private Course course;
 }

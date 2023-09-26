@@ -16,17 +16,21 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int userId;
+    @GeneratedValue
+    private Long userId;
+
+    @Column(nullable = false, length = 100)
+    private String firstName;
+    @Column(nullable = false, length = 100)
+    private String lastName;
+    @Column(name = "email_address")
+    private String email;
+    @Column(nullable = false, length = 100)
+    private String password;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @OneToMany(mappedBy = "user") // it is mapped by the user field in StudentCourseEnrollment
     private Set<StudentCourseEnrollment> enrollments;
-
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password;
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
 }

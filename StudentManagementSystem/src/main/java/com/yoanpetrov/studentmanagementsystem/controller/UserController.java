@@ -29,19 +29,19 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public Optional<User> getUserById(@PathVariable int id) {
+    public Optional<User> getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
     }
 
     @GetMapping("/{id}/courses")
-    public Set<StudentCourseEnrollment> getUserEnrollments(@PathVariable int id) {
+    public Set<StudentCourseEnrollment> getUserEnrollments(@PathVariable Long id) {
         User user = userService.getUserById(id)
                 .orElse(User.builder().enrollments(Collections.emptySet()).build());
         return user.getEnrollments();
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable int id, @RequestBody User userDetails) {
+    public User updateUser(@PathVariable Long id, @RequestBody User userDetails) {
         return userService.updateUser(id, userDetails);
     }
 
@@ -52,7 +52,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable int id) {
+    public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
     }
 }

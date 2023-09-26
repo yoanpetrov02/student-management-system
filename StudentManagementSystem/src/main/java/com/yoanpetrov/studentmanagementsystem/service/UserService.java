@@ -22,11 +22,11 @@ public class UserService {
         return repository.findAll();
     }
 
-    public Optional<User> getUserById(int id) {
+    public Optional<User> getUserById(Long id) {
         return repository.findById(id);
     }
 
-    public User updateUser(int id, User userDetails) {
+    public User updateUser(Long id, User userDetails) {
         Optional<User> user = repository.findById(id);
         if (user.isEmpty()) {
             return null;
@@ -45,7 +45,7 @@ public class UserService {
         repository.deleteAll();
     }
 
-    public void deleteUser(int id) {
+    public void deleteUser(Long id) {
         repository.deleteById(id);
     }
 }

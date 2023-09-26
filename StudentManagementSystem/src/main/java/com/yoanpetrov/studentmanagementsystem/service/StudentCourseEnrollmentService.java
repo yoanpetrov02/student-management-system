@@ -22,11 +22,11 @@ public class StudentCourseEnrollmentService {
         return repository.findAll();
     }
 
-    public Optional<StudentCourseEnrollment> getEnrollmentById(int id) {
+    public Optional<StudentCourseEnrollment> getEnrollmentById(Long id) {
         return repository.findById(id);
     }
 
-    public StudentCourseEnrollment updateEnrollment(int id, StudentCourseEnrollment enrollmentDetails) {
+    public StudentCourseEnrollment updateEnrollment(Long id, StudentCourseEnrollment enrollmentDetails) {
         Optional<StudentCourseEnrollment> enrollment = repository.findById(id);
         if (enrollment.isEmpty()) {
             return null;
@@ -42,7 +42,7 @@ public class StudentCourseEnrollmentService {
         repository.deleteAll();
     }
 
-    public void deleteEnrollment(int id) {
+    public void deleteEnrollment(Long id) {
         repository.deleteById(id);
     }
 }
