@@ -1,9 +1,13 @@
 package com.yoanpetrov.studentmanagementsystem.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Set;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "courses")
 public class Course {
@@ -19,44 +23,4 @@ public class Course {
     private String description;
     private int maxCapacity;
     private int numberOfStudents;
-
-    public String getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public int getMaxCapacity() {
-        return maxCapacity;
-    }
-
-    public void setMaxCapacity(int maxCapacity) {
-        this.maxCapacity = maxCapacity;
-    }
-
-    public int getNumberOfStudents() {
-        return numberOfStudents;
-    }
-
-    public void setNumberOfStudents(int numberOfStudents) {
-        this.numberOfStudents = numberOfStudents;
-    }
 }

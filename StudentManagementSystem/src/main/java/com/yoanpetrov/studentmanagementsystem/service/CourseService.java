@@ -2,17 +2,18 @@ package com.yoanpetrov.studentmanagementsystem.service;
 
 import com.yoanpetrov.studentmanagementsystem.model.Course;
 import com.yoanpetrov.studentmanagementsystem.repository.CourseRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class CourseService {
 
-    @Autowired
-    private CourseRepository repository;
+    private final CourseRepository repository;
 
     public Course createCourse(Course course) {
         return repository.save(course);

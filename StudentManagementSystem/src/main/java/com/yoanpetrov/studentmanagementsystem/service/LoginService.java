@@ -14,5 +14,4 @@ public class LoginService {
         service.generateToken()
 
     }*/
-
 }

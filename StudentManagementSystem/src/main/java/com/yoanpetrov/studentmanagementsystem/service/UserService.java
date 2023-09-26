@@ -2,17 +2,18 @@ package com.yoanpetrov.studentmanagementsystem.service;
 
 import com.yoanpetrov.studentmanagementsystem.model.User;
 import com.yoanpetrov.studentmanagementsystem.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository repository;
+    private final UserRepository repository;
 
     public User createUser(User user) {
         return repository.save(user);

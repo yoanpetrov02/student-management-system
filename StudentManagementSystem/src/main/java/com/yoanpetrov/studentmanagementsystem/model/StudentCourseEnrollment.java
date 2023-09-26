@@ -1,9 +1,13 @@
 package com.yoanpetrov.studentmanagementsystem.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
-@Table(name = "studentsCoursesEnrollments")
+@Table(name = "students_courses_enrollments")
 public class StudentCourseEnrollment {
 
     @Id
@@ -12,35 +16,11 @@ public class StudentCourseEnrollment {
 
     @ManyToOne
     @MapsId("userId")
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     User user;
 
     @ManyToOne
     @MapsId("courseId")
-    @JoinColumn(name = "courseId")
+    @JoinColumn(name = "course_id")
     Course course;
-
-    public String getEnrollmentId() {
-        return enrollmentId;
-    }
-
-    public void setEnrollmentId(String enrollmentId) {
-        this.enrollmentId = enrollmentId;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
-    }
 }
