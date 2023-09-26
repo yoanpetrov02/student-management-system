@@ -4,5 +4,5 @@ import com.yoanpetrov.studentmanagementsystem.model.StudentCourseEnrollment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface StudentCourseEnrollmentRepository
-        extends JpaRepository<StudentCourseEnrollment, String> {
+        extends JpaRepository<StudentCourseEnrollment, Integer> {
 }

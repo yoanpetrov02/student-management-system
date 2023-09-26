@@ -11,8 +11,8 @@ import lombok.Setter;
 public class StudentCourseEnrollment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String enrollmentId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int enrollmentId;
 
     @ManyToOne
     @MapsId("userId")

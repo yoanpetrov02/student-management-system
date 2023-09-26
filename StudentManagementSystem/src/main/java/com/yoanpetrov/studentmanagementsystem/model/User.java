@@ -2,16 +2,13 @@ package com.yoanpetrov.studentmanagementsystem.model;
 
 import com.yoanpetrov.studentmanagementsystem.security.Role;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import lombok.*;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Getter
 @Setter
 @Entity
@@ -19,18 +16,17 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String userId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int userId;
 
     @OneToMany(mappedBy = "user") // it is mapped by the user field in StudentCourseEnrollment
-    Set<StudentCourseEnrollment> enrollments;
+    private Set<StudentCourseEnrollment> enrollments;
 
     private String firstName;
     private String lastName;
     private String email;
-    private String pass;
+    private String password;
+
     @Enumerated(EnumType.STRING)
     private Role role;
-
-
 }

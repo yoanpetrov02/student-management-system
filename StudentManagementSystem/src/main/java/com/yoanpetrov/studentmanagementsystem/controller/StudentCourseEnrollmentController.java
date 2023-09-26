@@ -2,18 +2,19 @@ package com.yoanpetrov.studentmanagementsystem.controller;
 
 import com.yoanpetrov.studentmanagementsystem.model.StudentCourseEnrollment;
 import com.yoanpetrov.studentmanagementsystem.service.StudentCourseEnrollmentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/enrollments")
 public class StudentCourseEnrollmentController {
 
-    @Autowired
-    private StudentCourseEnrollmentService enrollmentService;
+    private final StudentCourseEnrollmentService enrollmentService;
 
     @PostMapping
     public StudentCourseEnrollment createEnrollment(@RequestBody StudentCourseEnrollment enrollment) {
@@ -26,12 +27,12 @@ public class StudentCourseEnrollmentController {
     }
 
     @GetMapping("/{id}")
-    public Optional<StudentCourseEnrollment> getEnrollmentById(@PathVariable String id) {
+    public Optional<StudentCourseEnrollment> getEnrollmentById(@PathVariable int id) {
         return enrollmentService.getEnrollmentById(id);
     }
 
     @PutMapping("/{id}")
-    public StudentCourseEnrollment updateEnrollment(@PathVariable String id, @RequestBody StudentCourseEnrollment enrollmentDetails) {
+    public StudentCourseEnrollment updateEnrollment(@PathVariable int id, @RequestBody StudentCourseEnrollment enrollmentDetails) {
         return enrollmentService.updateEnrollment(id, enrollmentDetails);
     }
 
@@ -42,7 +43,7 @@ public class StudentCourseEnrollmentController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteCourse(@PathVariable String id) {
+    public void deleteCourse(@PathVariable int id) {
         enrollmentService.deleteEnrollment(id);
     }
 }

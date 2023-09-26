@@ -13,8 +13,8 @@ import java.util.Set;
 public class Course {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String courseId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int courseId;
 
     @OneToMany(mappedBy = "course") // it is mapped by the course field in StudentCourseEnrollment
     Set<StudentCourseEnrollment> studentEnrollments;

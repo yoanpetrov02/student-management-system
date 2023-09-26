@@ -23,11 +23,11 @@ public class CourseService {
         return repository.findAll();
     }
 
-    public Optional<Course> getCourseById(String id) {
+    public Optional<Course> getCourseById(int id) {
         return repository.findById(id);
     }
 
-    public Course updateCourse(String id, Course courseDetails) {
+    public Course updateCourse(int id, Course courseDetails) {
         Optional<Course> course = repository.findById(id);
         if (course.isEmpty()) {
             return null;
@@ -45,7 +45,7 @@ public class CourseService {
         repository.deleteAll();
     }
 
-    public void deleteCourse(String id) {
+    public void deleteCourse(int id) {
         repository.deleteById(id);
     }
 }

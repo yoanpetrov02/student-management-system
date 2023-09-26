@@ -3,7 +3,6 @@ package com.yoanpetrov.studentmanagementsystem.service;
 import com.yoanpetrov.studentmanagementsystem.model.StudentCourseEnrollment;
 import com.yoanpetrov.studentmanagementsystem.repository.StudentCourseEnrollmentRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,11 +22,11 @@ public class StudentCourseEnrollmentService {
         return repository.findAll();
     }
 
-    public Optional<StudentCourseEnrollment> getEnrollmentById(String id) {
+    public Optional<StudentCourseEnrollment> getEnrollmentById(int id) {
         return repository.findById(id);
     }
 
-    public StudentCourseEnrollment updateEnrollment(String id, StudentCourseEnrollment enrollmentDetails) {
+    public StudentCourseEnrollment updateEnrollment(int id, StudentCourseEnrollment enrollmentDetails) {
         Optional<StudentCourseEnrollment> enrollment = repository.findById(id);
         if (enrollment.isEmpty()) {
             return null;
@@ -43,7 +42,7 @@ public class StudentCourseEnrollmentService {
         repository.deleteAll();
     }
 
-    public void deleteEnrollment(String id) {
+    public void deleteEnrollment(int id) {
         repository.deleteById(id);
     }
 }

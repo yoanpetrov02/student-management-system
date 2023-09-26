@@ -3,7 +3,6 @@ package com.yoanpetrov.studentmanagementsystem.service;
 import com.yoanpetrov.studentmanagementsystem.model.User;
 import com.yoanpetrov.studentmanagementsystem.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,11 +22,11 @@ public class UserService {
         return repository.findAll();
     }
 
-    public Optional<User> getUserById(String id) {
+    public Optional<User> getUserById(int id) {
         return repository.findById(id);
     }
 
-    public User updateUser(String id, User userDetails) {
+    public User updateUser(int id, User userDetails) {
         Optional<User> user = repository.findById(id);
         if (user.isEmpty()) {
             return null;
@@ -36,7 +35,7 @@ public class UserService {
         existingUser.setFirstName(userDetails.getFirstName());
         existingUser.setLastName(userDetails.getLastName());
         existingUser.setEmail(userDetails.getEmail());
-        existingUser.setPass(userDetails.getPass());
+        existingUser.setPassword(userDetails.getPassword());
         existingUser.setRole(userDetails.getRole());
 
         return repository.save(existingUser);
@@ -46,7 +45,7 @@ public class UserService {
         repository.deleteAll();
     }
 
-    public void deleteUser(String id) {
+    public void deleteUser(int id) {
         repository.deleteById(id);
     }
 }
