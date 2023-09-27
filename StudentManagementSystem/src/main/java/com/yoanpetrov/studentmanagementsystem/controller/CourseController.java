@@ -66,7 +66,7 @@ public class CourseController {
     }
 
     @DeleteMapping("/{id}/users")
-    public User removeUserFromCourse(@PathVariable Long id, User requestUser) {
+    public User removeUserFromCourse(@PathVariable Long id, @RequestBody User requestUser) {
         User user = courseService.removeUserFromCourse(id, requestUser);
         return user;
     }

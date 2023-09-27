@@ -59,7 +59,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}/courses")
-    public Course removeCourseFromUser(@PathVariable Long id, Course requestCourse) {
+    public Course removeCourseFromUser(@PathVariable Long id, @RequestBody Course requestCourse) {
         Course course = userService.removeCourseFromUser(id, requestCourse);
         return course;
     }
