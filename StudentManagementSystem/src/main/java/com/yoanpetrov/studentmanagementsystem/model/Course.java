@@ -3,7 +3,8 @@ package com.yoanpetrov.studentmanagementsystem.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,6 +28,9 @@ public class Course {
     @Column(nullable = false)
     private int numberOfStudents;
 
-    @OneToMany(mappedBy = "course") // it is mapped by the course field in StudentCourseEnrollment
-    private Set<StudentCourseEnrollment> studentEnrollments;
+    @ManyToMany
+    @JoinTable(name = "students_courses_enrollments",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> users = new ArrayList<>();
 }

@@ -1,6 +1,7 @@
 package com.yoanpetrov.studentmanagementsystem.controller;
 
 import com.yoanpetrov.studentmanagementsystem.model.Course;
+import com.yoanpetrov.studentmanagementsystem.model.User;
 import com.yoanpetrov.studentmanagementsystem.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +16,6 @@ public class CourseController {
 
     private final CourseService courseService;
 
-    @PostMapping
-    public Course createCourse(@RequestBody Course course) {
-        return courseService.createCourse(course);
-    }
-
     @GetMapping
     public List<Course> getAllCourses() {
         return courseService.getAllCourses();
@@ -28,6 +24,29 @@ public class CourseController {
     @GetMapping("/{id}")
     public Optional<Course> getCourseById(@PathVariable Long id) {
         return courseService.getCourseById(id);
+    }
+
+    @GetMapping("/{id}/users")
+    public List<User> getAllCourseUsers(@PathVariable Long id) {
+        return courseService.getAllCourseUsers(id);
+    }
+
+    @PostMapping
+    public Course createCourse(@RequestBody Course course) {
+        return courseService.createCourse(course);
+    }
+
+    /**
+     * Adds a user to a course
+     *
+     * @param id the course id.
+     * @param requestUser the user to be added to the course.
+     * @return the added user todo everything has to change to use response codes and stuff.
+     */
+    @PostMapping("/{id}/users")
+    public User addUserToCourse(@PathVariable Long id, @RequestBody User requestUser) {
+        User user = courseService.addUserToCourse(id, requestUser);
+        return user;
     }
 
     @PutMapping("/{id}")
@@ -44,5 +63,11 @@ public class CourseController {
     @DeleteMapping("/{id}")
     public void deleteCourse(@PathVariable Long id) {
         courseService.deleteCourse(id);
+    }
+
+    @DeleteMapping("/{id}/users")
+    public User removeUserFromCourse(@PathVariable Long id, User requestUser) {
+        User user = courseService.removeUserFromCourse(id, requestUser);
+        return user;
     }
 }

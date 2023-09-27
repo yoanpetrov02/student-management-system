@@ -1,15 +1,13 @@
 package com.yoanpetrov.studentmanagementsystem.controller;
 
-import com.yoanpetrov.studentmanagementsystem.model.StudentCourseEnrollment;
+import com.yoanpetrov.studentmanagementsystem.model.Course;
 import com.yoanpetrov.studentmanagementsystem.model.User;
 import com.yoanpetrov.studentmanagementsystem.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @RequiredArgsConstructor
 @RestController
@@ -17,11 +15,6 @@ import java.util.Set;
 public class UserController {
 
     private final UserService userService;
-
-    @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
-    }
 
     @GetMapping
     public List<User> getAllUsers() {
@@ -34,10 +27,19 @@ public class UserController {
     }
 
     @GetMapping("/{id}/courses")
-    public Set<StudentCourseEnrollment> getUserEnrollments(@PathVariable Long id) {
-        User user = userService.getUserById(id)
-                .orElse(User.builder().enrollments(Collections.emptySet()).build());
-        return user.getEnrollments();
+    public List<Course> getUserCourses(@PathVariable Long id) {
+        return userService.getAllUserCourses(id);
+    }
+
+    @PostMapping
+    public User createUser(@RequestBody User user) {
+        return userService.createUser(user);
+    }
+
+    @PostMapping("/{id}/courses")
+    public Course addCourseToUser(@PathVariable Long id, @RequestBody Course requestCourse) {
+        Course course = userService.addCourseToUser(id, requestCourse);
+        return course;
     }
 
     @PutMapping("/{id}")
@@ -54,5 +56,11 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
+    }
+
+    @DeleteMapping("/{id}/courses")
+    public Course removeCourseFromUser(@PathVariable Long id, Course requestCourse) {
+        Course course = userService.removeCourseFromUser(id, requestCourse);
+        return course;
     }
 }

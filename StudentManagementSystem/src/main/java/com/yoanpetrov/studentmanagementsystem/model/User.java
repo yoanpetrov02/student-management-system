@@ -1,10 +1,12 @@
 package com.yoanpetrov.studentmanagementsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yoanpetrov.studentmanagementsystem.security.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,7 +25,6 @@ public class User {
     private String firstName;
     @Column(nullable = false, length = 100)
     private String lastName;
-    @Column(name = "email_address")
     private String email;
     @Column(nullable = false, length = 100)
     private String password;
@@ -31,6 +32,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user") // it is mapped by the user field in StudentCourseEnrollment
-    private Set<StudentCourseEnrollment> enrollments;
+    @ManyToMany(mappedBy = "users")
+    @JsonIgnore // do not remove unless you want to create a StackOverflow
+    private List<Course> courses = new ArrayList<>();
 }
