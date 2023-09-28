@@ -1,5 +1,6 @@
 package com.yoanpetrov.studentmanagementsystem.service;
 
+import com.yoanpetrov.studentmanagementsystem.exceptions.ResourceNotFoundException;
 import com.yoanpetrov.studentmanagementsystem.model.Course;
 import com.yoanpetrov.studentmanagementsystem.model.User;
 import com.yoanpetrov.studentmanagementsystem.repository.CourseRepository;
@@ -17,6 +18,10 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
 
+    public boolean existsCourse(Long courseId) {
+        return courseRepository.existsById(courseId);
+    }
+
     public List<Course> getAllCourses() {
         return courseRepository.findAll();
     }
@@ -33,23 +38,14 @@ public class CourseService {
         return courseRepository.save(course);
     }
 
-    /**
-     * Gets the course and the user from the DB, adds the User to the course's
-     * user list and adds the course to the user's course list.
-     *
-     * @param courseId the id of the course.
-     * @param userToAdd the user to be added.
-     * @return the User that was added.
-     */
     public User addUserToCourse(Long courseId, User userToAdd) {
-        User user = courseRepository.findById(courseId).map(course -> {
-            Long userId = userToAdd.getUserId();
-            User userFromDb = userRepository.findById(userId).get();
-            course.getUsers().add(userFromDb);
-            userFromDb.getCourses().add(course);
-            courseRepository.save(course);
-            return userFromDb;
-        }).get();
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
+        User user = userRepository.findById(userToAdd.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        course.getUsers().add(user);
+        user.getCourses().add(course);
+        courseRepository.save(course);
         return user;
     }
 
@@ -75,15 +71,14 @@ public class CourseService {
         courseRepository.deleteById(id);
     }
 
-    public User removeUserFromCourse(Long id, User userToRemove) {
-        User user = courseRepository.findById(id).map(course -> {
-            Long userId = userToRemove.getUserId();
-            User userFromDb = userRepository.findById(userId).get();
-            course.getUsers().remove(userFromDb);
-            userFromDb.getCourses().remove(course);
-            courseRepository.save(course);
-            return userFromDb;
-        }).get();
+    public User removeUserFromCourse(Long courseId, User userToRemove) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
+        User user = userRepository.findById(userToRemove.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        course.getUsers().remove(user);
+        user.getCourses().remove(course);
+        courseRepository.save(course);
         return user;
     }
 }

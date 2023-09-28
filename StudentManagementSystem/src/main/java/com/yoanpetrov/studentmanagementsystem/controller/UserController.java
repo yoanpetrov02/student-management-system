@@ -1,14 +1,17 @@
 package com.yoanpetrov.studentmanagementsystem.controller;
 
+import com.yoanpetrov.studentmanagementsystem.exceptions.ResourceNotFoundException;
 import com.yoanpetrov.studentmanagementsystem.model.Course;
 import com.yoanpetrov.studentmanagementsystem.model.User;
 import com.yoanpetrov.studentmanagementsystem.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
+// TODO: 29-Sep-23 Add a service method to remove all of the user's courses
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/users")
@@ -17,50 +20,72 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        if (users.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public Optional<User> getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        User user = userService.getUserById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("/{id}/courses")
-    public List<Course> getUserCourses(@PathVariable Long id) {
-        return userService.getAllUserCourses(id);
+    public ResponseEntity<List<Course>> getAllUserCourses(@PathVariable Long id) {
+        if (!userService.existsUser(id)) {
+            throw new ResourceNotFoundException("User not found");
+        }
+        List<Course> courses = userService.getAllUserCourses(id);
+        if (courses.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(courses, HttpStatus.OK);
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        User createdUser = userService.createUser(user);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
-    @PostMapping("/{id}/courses")
-    public Course addCourseToUser(@PathVariable Long id, @RequestBody Course requestCourse) {
-        Course course = userService.addCourseToUser(id, requestCourse);
-        return course;
+    @PostMapping("/{userId}/courses")
+    public ResponseEntity<Course> addCourseToUser(@PathVariable Long userId, @RequestBody Course requestCourse) {
+        Course course = userService.addCourseToUser(userId, requestCourse);
+        return new ResponseEntity<>(course, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody User userDetails) {
-        return userService.updateUser(id, userDetails);
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
+        if (!userService.existsUser(id)) {
+            throw new ResourceNotFoundException("User not found");
+        }
+        User user = userService.updateUser(id, userDetails);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @DeleteMapping
-    public String deleteAllUsers() {
+    public ResponseEntity<String> deleteAllUsers() {
         userService.deleteAllUsers();
-        return "All users have been deleted successfully.";
+        return new ResponseEntity<>("All users have been deleted successfully", HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
+    @DeleteMapping("/{id}") // todo make this remove all the user's courses before deleting the user
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        if (!userService.existsUser(id)) {
+            throw new ResourceNotFoundException("User not found");
+        }
         userService.deleteUser(id);
+        return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}/courses")
-    public Course removeCourseFromUser(@PathVariable Long id, @RequestBody Course requestCourse) {
+    public ResponseEntity<Course> removeCourseFromUser(@PathVariable Long id, @RequestBody Course requestCourse) {
         Course course = userService.removeCourseFromUser(id, requestCourse);
-        return course;
+        return new ResponseEntity<>(course, HttpStatus.OK);
     }
 }
