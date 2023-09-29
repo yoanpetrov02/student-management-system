@@ -3,8 +3,7 @@ package com.yoanpetrov.studentmanagementsystem;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-// TODO: 25-Sep-23 Finish lombok integration
-// TODO: 25-Sep-23 Update endpoints to follow the newly written ones
+// TODO: 01-Oct-23 Add integration tests for the API.
 
 @SpringBootApplication
 public class Main {

@@ -43,8 +43,7 @@ public class CourseService {
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
         User user = userRepository.findById(userToAdd.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        course.getUsers().add(user);
-        user.getCourses().add(course);
+        course.addUser(user);
         courseRepository.save(course);
         return user;
     }
@@ -76,8 +75,7 @@ public class CourseService {
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
         User user = userRepository.findById(userToRemove.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        course.getUsers().remove(user);
-        user.getCourses().remove(course);
+        course.removeUser(user);
         courseRepository.save(course);
         return user;
     }

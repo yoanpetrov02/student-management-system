@@ -1,5 +1,6 @@
 package com.yoanpetrov.studentmanagementsystem.service;
 
+import com.yoanpetrov.studentmanagementsystem.exceptions.ResourceConflictException;
 import com.yoanpetrov.studentmanagementsystem.exceptions.ResourceNotFoundException;
 import com.yoanpetrov.studentmanagementsystem.model.Course;
 import com.yoanpetrov.studentmanagementsystem.model.User;
@@ -43,8 +44,7 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Course course = courseRepository.findById(courseToAdd.getCourseId())
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
-        user.getCourses().add(course);
-        course.getUsers().add(user);
+        course.addUser(user);
         userRepository.save(user);
         return course;
     }
@@ -77,8 +77,7 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Course course = courseRepository.findById(courseToRemove.getCourseId())
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
-        user.getCourses().remove(course);
-        course.getUsers().remove(user);
+        course.removeUser(user);
         userRepository.save(user);
         return course;
     }
