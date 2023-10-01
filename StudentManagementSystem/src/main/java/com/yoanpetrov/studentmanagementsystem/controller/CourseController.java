@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-// TODO: 29-Sep-23 Add a service method to remove all of the course's users
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/courses")

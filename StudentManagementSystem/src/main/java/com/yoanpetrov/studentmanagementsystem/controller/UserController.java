@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// TODO: 29-Sep-23 Add a service method to remove all of the user's courses
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/users")
@@ -74,7 +73,7 @@ public class UserController {
         return new ResponseEntity<>("All users have been deleted successfully", HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}") // todo make this remove all the user's courses before deleting the user
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         if (!userService.existsUser(id)) {
             throw new ResourceNotFoundException("User not found");
