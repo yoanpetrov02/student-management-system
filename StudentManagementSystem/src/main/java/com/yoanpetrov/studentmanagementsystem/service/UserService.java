@@ -41,9 +41,9 @@ public class UserService {
 
     public Course addCourseToUser(Long userId, Course courseToAdd) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Course course = courseRepository.findById(courseToAdd.getCourseId())
-                .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
         course.addUser(user);
         userRepository.save(user);
         return course;
@@ -74,9 +74,9 @@ public class UserService {
 
     public Course removeCourseFromUser(Long userId, Course courseToRemove) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Course course = courseRepository.findById(courseToRemove.getCourseId())
-                .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
         course.removeUser(user);
         userRepository.save(user);
         return course;

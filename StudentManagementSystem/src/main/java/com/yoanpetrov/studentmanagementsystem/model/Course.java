@@ -32,8 +32,8 @@ public class Course {
 
     @ManyToMany(cascade = CascadeType.REMOVE)
     @JoinTable(name = "students_courses_enrollments",
-            joinColumns = @JoinColumn(name = "course_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
+        joinColumns = @JoinColumn(name = "course_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> users = new ArrayList<>();
 
     public void addUser(User user) {
@@ -62,10 +62,10 @@ public class Course {
         if (o == null || getClass() != o.getClass()) return false;
         Course course = (Course) o;
         return maxCapacity == course.maxCapacity
-                && numberOfStudents == course.numberOfStudents
-                && Objects.equals(courseId, course.courseId)
-                && Objects.equals(name, course.name)
-                && Objects.equals(description, course.description);
+            && numberOfStudents == course.numberOfStudents
+            && Objects.equals(courseId, course.courseId)
+            && Objects.equals(name, course.name)
+            && Objects.equals(description, course.description);
     }
 
     @Override
