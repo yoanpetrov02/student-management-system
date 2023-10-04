@@ -30,7 +30,7 @@ public class CourseController {
     @GetMapping("/{id}")
     public ResponseEntity<Course> getCourseById(@PathVariable Long id) {
         Course course = courseService.getCourseById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
         return new ResponseEntity<>(course, HttpStatus.OK);
     }
 
