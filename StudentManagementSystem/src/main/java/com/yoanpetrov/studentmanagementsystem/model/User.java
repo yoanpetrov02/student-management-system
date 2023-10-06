@@ -21,7 +21,6 @@ public class User {
     @Id
     @GeneratedValue
     private Long userId;
-
     @Column(nullable = false, length = 100)
     private String firstName;
     @Column(nullable = false, length = 100)
@@ -36,6 +35,9 @@ public class User {
     @ManyToMany(mappedBy = "users", cascade = CascadeType.REMOVE)
     @JsonIgnore // do not remove unless you want to create a StackOverflow
     private List<Course> courses = new ArrayList<>();
+
+    @OneToOne(mappedBy = "user")
+    private UserAccount userAccount = new UserAccount();
 
     @Override
     public boolean equals(Object o) {
