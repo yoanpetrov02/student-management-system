@@ -16,13 +16,13 @@ public class LoginService {
     private final UserAccountRepository userAccountRepository;
     private final PasswordEncoder encoder;
 
-    public boolean checkUserExistence(UserAccount userAccount) {
-        return userAccountRepository.existsById(userAccount.getAccountId());
+    public boolean checkUserExistence(String username) {
+        return userAccountRepository.existsByUsername(username);
     }
 
-    public boolean validatePassword(UserAccount userAccount) {
-        String hashed = encoder.encode(userAccount.getPassword());
-        UserAccount accountFromDb = userAccountRepository.findById(userAccount.getAccountId())
+    public boolean validatePassword(String username, String password) {
+        String hashed = encoder.encode(password);
+        UserAccount accountFromDb = userAccountRepository.findByUsername(username)
             .orElseThrow(() -> new ResourceNotFoundException("The user account does not exist"));
 
         return Objects.equals(hashed, accountFromDb.getPassword());
