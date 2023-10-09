@@ -4,7 +4,7 @@ import org.apache.log4j.BasicConfigurator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-// TODO: 01-Oct-23 Add integration tests for the API.
+// TODO: 06-Oct-23 Finish integrating user_accounts into the project
 
 @SpringBootApplication
 public class Main {

@@ -1,6 +1,5 @@
 package com.yoanpetrov.studentmanagementsystem.service;
 
-import com.yoanpetrov.studentmanagementsystem.exceptions.ResourceConflictException;
 import com.yoanpetrov.studentmanagementsystem.exceptions.ResourceNotFoundException;
 import com.yoanpetrov.studentmanagementsystem.model.Course;
 import com.yoanpetrov.studentmanagementsystem.model.User;
@@ -19,7 +18,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
 
-    public boolean existsUser(Long userId) {
+    public boolean existsUserById(Long userId) {
         return userRepository.existsById(userId);
     }
 
@@ -58,8 +57,6 @@ public class UserService {
         existingUser.setFirstName(userDetails.getFirstName());
         existingUser.setLastName(userDetails.getLastName());
         existingUser.setEmail(userDetails.getEmail());
-        existingUser.setPassword(userDetails.getPassword());
-        existingUser.setRole(userDetails.getRole());
 
         return userRepository.save(existingUser);
     }
