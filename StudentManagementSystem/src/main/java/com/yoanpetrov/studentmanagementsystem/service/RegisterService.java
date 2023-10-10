@@ -1,17 +1,15 @@
 package com.yoanpetrov.studentmanagementsystem.service;
 
-import com.yoanpetrov.studentmanagementsystem.exceptions.ResourceNotFoundException;
 import com.yoanpetrov.studentmanagementsystem.model.UserAccount;
 import com.yoanpetrov.studentmanagementsystem.repository.UserAccountRepository;
+import com.yoanpetrov.studentmanagementsystem.security.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
 @RequiredArgsConstructor
 @Service
-public class LoginService {
+public class RegisterService {
 
     private final UserAccountRepository userAccountRepository;
     private final PasswordEncoder encoder;
@@ -20,10 +18,14 @@ public class LoginService {
         return userAccountRepository.existsByUsername(username);
     }
 
-    public boolean validatePassword(String username, String password) {
-        UserAccount accountFromDb = userAccountRepository.findByUsername(username)
-            .orElseThrow(() -> new ResourceNotFoundException("The user account does not exist"));
+    public UserAccount createUserAccount(String username, String password) {
+        String hashed = encoder.encode(password);
+        UserAccount userAccount = UserAccount.builder()
+            .username(username)
+            .password(hashed)
+            .role(Role.USER)
+            .build();
 
-        return encoder.matches(password, accountFromDb.getPassword());
+        return userAccountRepository.save(userAccount);
     }
 }

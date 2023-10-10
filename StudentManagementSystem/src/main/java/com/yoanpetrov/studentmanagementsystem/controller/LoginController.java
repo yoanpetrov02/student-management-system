@@ -1,7 +1,6 @@
 package com.yoanpetrov.studentmanagementsystem.controller;
 
 import com.yoanpetrov.studentmanagementsystem.service.LoginService;
-import com.yoanpetrov.studentmanagementsystem.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +14,6 @@ import java.util.Map;
 @RequestMapping("/api/v1/login")
 public class LoginController {
 
-    private final UserService userService;
     private final LoginService loginService;
 
     @PostMapping
