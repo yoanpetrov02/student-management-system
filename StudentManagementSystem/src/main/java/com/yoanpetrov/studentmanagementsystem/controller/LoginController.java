@@ -1,6 +1,6 @@
 package com.yoanpetrov.studentmanagementsystem.controller;
 
-import com.yoanpetrov.studentmanagementsystem.service.LoginService;
+import com.yoanpetrov.studentmanagementsystem.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,16 +14,16 @@ import java.util.Map;
 @RequestMapping("/api/v1/login")
 public class LoginController {
 
-    private final LoginService loginService;
+    private final AuthenticationService authenticationService;
 
     @PostMapping
     public String authenticateUser(@RequestBody Map<String, String> userData) {
         String username = userData.get("username");
         String password = userData.get("password");
-        if (!loginService.checkUserExistence(username)) {
+        if (!authenticationService.checkUserExistence(username)) {
             return "A user with that username does not exist!";
         }
-        if (!loginService.validatePassword(username, password)) {
+        if (!authenticationService.validatePassword(username, password)) {
             return "Wrong password!";
         }
         return "Successful login!";
