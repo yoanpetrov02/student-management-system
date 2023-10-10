@@ -28,17 +28,13 @@ public class UserIntegrationTests {
         .userId(1L)
         .firstName("Test")
         .lastName("User")
-        .email("test@test.com")
-        .password("test")
-        .role(Role.USER).build();
+        .email("test@test.com").build();
 
     private static final User UPDATED_USER = User.builder()
         .userId(1L)
         .firstName("Test")
         .lastName("Updated")
-        .email("test@test.com")
-        .password("test")
-        .role(Role.USER).build();
+        .email("test@test.com").build();
 
     private static final Course TEST_COURSE = Course.builder()
         .courseId(1L)
@@ -92,9 +88,7 @@ public class UserIntegrationTests {
                 "userId", equalTo(1),
                 "firstName", equalTo("Test"),
                 "lastName", equalTo("User"),
-                "email", equalTo("test@test.com"),
-                "email", equalTo("test@test.com"),
-                "role", equalTo("USER"));
+                "email", equalTo("test@test.com"));
     }
 
     @Order(4)

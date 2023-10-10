@@ -29,9 +29,7 @@ public class CourseIntegrationTests {
         .userId(1L)
         .firstName("Test")
         .lastName("User")
-        .email("test@test.com")
-        .password("test")
-        .role(Role.USER).build();
+        .email("test@test.com").build();
 
     private static final Course UPDATED_COURSE = Course.builder()
         .courseId(1L)

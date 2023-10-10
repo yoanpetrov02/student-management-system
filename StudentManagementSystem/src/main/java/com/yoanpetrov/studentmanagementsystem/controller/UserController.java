@@ -36,7 +36,7 @@ public class UserController {
 
     @GetMapping("/{id}/courses")
     public ResponseEntity<List<Course>> getAllUserCourses(@PathVariable Long id) {
-        if (!userService.existsUser(id)) {
+        if (!userService.existsUserById(id)) {
             throw new ResourceNotFoundException("User not found");
         }
         List<Course> courses = userService.getAllUserCourses(id);
@@ -60,7 +60,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
-        if (!userService.existsUser(id)) {
+        if (!userService.existsUserById(id)) {
             throw new ResourceNotFoundException("User not found");
         }
         User user = userService.updateUser(id, userDetails);
@@ -75,7 +75,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
-        if (!userService.existsUser(id)) {
+        if (!userService.existsUserById(id)) {
             throw new ResourceNotFoundException("User not found");
         }
         userService.deleteUser(id);

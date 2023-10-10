@@ -21,21 +21,18 @@ public class User {
     @Id
     @GeneratedValue
     private Long userId;
-
     @Column(nullable = false, length = 100)
     private String firstName;
     @Column(nullable = false, length = 100)
     private String lastName;
     private String email;
-    @Column(nullable = false, length = 100)
-    private String password;
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Role role;
 
     @ManyToMany(mappedBy = "users", cascade = CascadeType.REMOVE)
     @JsonIgnore // do not remove unless you want to create a StackOverflow
     private List<Course> courses = new ArrayList<>();
+
+    @OneToOne(mappedBy = "user")
+    private UserAccount userAccount = new UserAccount();
 
     @Override
     public boolean equals(Object o) {
@@ -45,13 +42,11 @@ public class User {
         return Objects.equals(userId, user.userId)
                 && Objects.equals(firstName, user.firstName)
                 && Objects.equals(lastName, user.lastName)
-                && Objects.equals(email, user.email)
-                && Objects.equals(password, user.password)
-                && role == user.role;
+                && Objects.equals(email, user.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, firstName, lastName, email, password, role);
+        return Objects.hash(userId, firstName, lastName, email);
     }
 }
