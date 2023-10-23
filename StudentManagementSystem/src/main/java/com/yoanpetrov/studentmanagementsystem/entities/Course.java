@@ -6,13 +6,16 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
+/**
+ * Represents a course.
+ * Each course can have multiple users.
+ * A course can have students added to/removed from it.
+ */
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Getter
-@Setter
 @Entity
 @Table(name = "courses")
 public class Course {
@@ -25,12 +28,20 @@ public class Course {
     private int maxCapacity;
     private int numberOfStudents;
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @ManyToMany(cascade = CascadeType.REMOVE)
     @JoinTable(name = "students_courses_enrollments",
         joinColumns = @JoinColumn(name = "course_id"),
         inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> users = new ArrayList<>();
 
+    /**
+     * Adds a {@code User} to the course.
+     *
+     * @param user the user to be added.
+     * @throws ResourceConflictException if the course is full or if the user already exists in the course.
+     */
     public void addUser(User user) {
         if (numberOfStudents == maxCapacity) {
             throw new ResourceConflictException("The course is full");
@@ -43,28 +54,17 @@ public class Course {
         numberOfStudents++;
     }
 
+    /**
+     * Removes a {@code User} from the course.
+     *
+     * @param user the user to be removed.
+     * @throws ResourceConflictException if the user is not present in the course.
+     */
     public void removeUser(User user) {
-        if (!users.remove(user)) { // user wasn't present in the list
+        if (!users.remove(user)) {
             throw new ResourceConflictException("The user is not present in the course");
         }
         user.getCourses().remove(this);
         numberOfStudents--;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Course course = (Course) o;
-        return maxCapacity == course.maxCapacity
-            && numberOfStudents == course.numberOfStudents
-            && Objects.equals(courseId, course.courseId)
-            && Objects.equals(name, course.name)
-            && Objects.equals(description, course.description);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(courseId, name, description, maxCapacity, numberOfStudents);
     }
 }

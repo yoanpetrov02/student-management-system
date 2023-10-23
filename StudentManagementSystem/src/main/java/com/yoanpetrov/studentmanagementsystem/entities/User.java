@@ -6,13 +6,14 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
+/**
+ * Represents a user. Each user can be enrolled in multiple courses, and is connected to a single user account.
+ */
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Getter
-@Setter
 @Entity
 @Table(name = "users")
 public class User {
@@ -24,27 +25,15 @@ public class User {
     private String lastName;
     private String email;
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @ManyToMany(mappedBy = "users", cascade = CascadeType.REMOVE)
     @JsonIgnore // do not remove unless you want to create a StackOverflow error
     private List<Course> courses = new ArrayList<>();
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore // do not remove unless you want to create a StackOverflow error
     private UserAccount userAccount;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(userId, user.userId)
-                && Objects.equals(firstName, user.firstName)
-                && Objects.equals(lastName, user.lastName)
-                && Objects.equals(email, user.email);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(userId, firstName, lastName, email);
-    }
 }
