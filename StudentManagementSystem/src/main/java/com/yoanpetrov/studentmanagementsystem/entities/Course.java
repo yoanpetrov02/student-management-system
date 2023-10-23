@@ -1,4 +1,4 @@
-package com.yoanpetrov.studentmanagementsystem.model;
+package com.yoanpetrov.studentmanagementsystem.entities;
 
 import com.yoanpetrov.studentmanagementsystem.exceptions.ResourceConflictException;
 import jakarta.persistence.*;
@@ -20,14 +20,9 @@ public class Course {
     @Id
     @GeneratedValue
     private Long courseId;
-
-    @Column(nullable = false, length = 100)
     private String name;
-    @Column
     private String description;
-    @Column(nullable = false)
     private int maxCapacity;
-    @Column(nullable = false)
     private int numberOfStudents;
 
     @ManyToMany(cascade = CascadeType.REMOVE)

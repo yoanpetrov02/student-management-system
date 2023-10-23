@@ -1,6 +1,6 @@
-package com.yoanpetrov.studentmanagementsystem.repository;
+package com.yoanpetrov.studentmanagementsystem.repositories;
 
-import com.yoanpetrov.studentmanagementsystem.model.Course;
+import com.yoanpetrov.studentmanagementsystem.entities.Course;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

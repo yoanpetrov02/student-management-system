@@ -1,10 +1,10 @@
-package com.yoanpetrov.studentmanagementsystem.service;
+package com.yoanpetrov.studentmanagementsystem.services;
 
 import com.yoanpetrov.studentmanagementsystem.exceptions.ResourceNotFoundException;
-import com.yoanpetrov.studentmanagementsystem.model.Course;
-import com.yoanpetrov.studentmanagementsystem.model.User;
-import com.yoanpetrov.studentmanagementsystem.repository.CourseRepository;
-import com.yoanpetrov.studentmanagementsystem.repository.UserRepository;
+import com.yoanpetrov.studentmanagementsystem.entities.Course;
+import com.yoanpetrov.studentmanagementsystem.entities.User;
+import com.yoanpetrov.studentmanagementsystem.repositories.CourseRepository;
+import com.yoanpetrov.studentmanagementsystem.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

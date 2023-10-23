@@ -1,8 +1,7 @@
 package com.yoanpetrov.studentmanagementsystem.integration;
 
-import com.yoanpetrov.studentmanagementsystem.model.Course;
-import com.yoanpetrov.studentmanagementsystem.model.User;
-import com.yoanpetrov.studentmanagementsystem.security.Role;
+import com.yoanpetrov.studentmanagementsystem.entities.Course;
+import com.yoanpetrov.studentmanagementsystem.entities.User;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.apache.log4j.BasicConfigurator;
@@ -19,6 +18,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+//@WebMvcTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CourseIntegrationTests {
@@ -50,7 +50,7 @@ public class CourseIntegrationTests {
 
     @BeforeAll
     public static void setupLogger() {
-        BasicConfigurator.configure();
+        BasicConfigurator.configure(); // configures logger
     }
 
     @BeforeEach
