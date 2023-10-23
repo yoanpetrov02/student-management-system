@@ -1,9 +1,8 @@
 package com.yoanpetrov.studentmanagementsystem.exceptions;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-@ResponseStatus(HttpStatus.CONFLICT)
+/**
+ * An exception for cases where a 409 Conflict status code should be returned from a controller.
+ */
 public class ResourceConflictException extends RuntimeException {
 
     public ResourceConflictException(String message) {
