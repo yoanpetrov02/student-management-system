@@ -9,6 +9,9 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 // TODO: 16-Oct-23 Add a test profile with a different configuration
 // TODO: 16-Oct-23 Add JSON validation using Hibernate Validator
 
+/**
+ * Main starting point of the application.
+ */
 @SpringBootApplication
 public class Main {
     public static void main(String[] args) {
