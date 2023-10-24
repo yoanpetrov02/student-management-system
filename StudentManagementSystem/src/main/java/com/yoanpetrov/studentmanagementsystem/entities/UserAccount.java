@@ -7,13 +7,16 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Objects;
 
+/**
+ * Represents a user account. Each user account is connected to a single user.
+ * This class implements {@code UserDetails}, an interface used by Spring Security
+ * to manage authentication and authorization.
+ */
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Getter
-@Setter
 @Entity
 @Table(name = "user_accounts")
 public class UserAccount implements UserDetails {
@@ -27,24 +30,11 @@ public class UserAccount implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserAccount that = (UserAccount) o;
-        return accountId == that.accountId
-            && Objects.equals(username, that.username)
-            && Objects.equals(password, that.password);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(accountId, username, password);
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

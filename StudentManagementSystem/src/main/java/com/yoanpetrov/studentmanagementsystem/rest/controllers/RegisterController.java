@@ -1,6 +1,5 @@
 package com.yoanpetrov.studentmanagementsystem.rest.controllers;
 
-import com.yoanpetrov.studentmanagementsystem.entities.UserAccount;
 import com.yoanpetrov.studentmanagementsystem.rest.dto.UserAccountDto;
 import com.yoanpetrov.studentmanagementsystem.security.AuthenticationResponse;
 import com.yoanpetrov.studentmanagementsystem.services.AuthenticationService;
@@ -9,6 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Rest controller for the register endpoints.
+ */
 @RequiredArgsConstructor
 @RestController
 @CrossOrigin
@@ -17,6 +19,13 @@ public class RegisterController {
 
     private final AuthenticationService authenticationService;
 
+    /**
+     * Registers the given user.
+     *
+     * @param userDto the credentials of the user's account.
+     * @return 200 and a JWT token if the user was successfully registered,
+     * 409 if a user account with this username already exists.
+     */
     @PostMapping
     public ResponseEntity<AuthenticationResponse> registerUser(@RequestBody UserAccountDto userDto) {
         String username = userDto.getUsername();
