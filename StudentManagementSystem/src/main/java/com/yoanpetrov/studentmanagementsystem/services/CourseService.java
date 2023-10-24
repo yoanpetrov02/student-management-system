@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Course service. Used to perform business logic on courses.
+ */
 @RequiredArgsConstructor
 @Service
 public class CourseService {
@@ -18,26 +21,63 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
 
+    /**
+     * Checks whether a course exists in the database.
+     *
+     * @param courseId the id of the course.
+     * @return true if the course exists, false otherwise.
+     */
     public boolean existsCourse(Long courseId) {
         return courseRepository.existsById(courseId);
     }
 
+    /**
+     * Gets all existing courses in the database.
+     *
+     * @return a list of the courses, empty if no courses exist.
+     */
     public List<Course> getAllCourses() {
         return courseRepository.findAll();
     }
 
+    /**
+     * Gets a single course from the database by its id.
+     *
+     * @param id the id of the course.
+     * @return an {@code Optional} with the course if it exists, or with null if it doesn't exist.
+     */
     public Optional<Course> getCourseById(Long id) {
         return courseRepository.findById(id);
     }
 
+    /**
+     * Gets all users enrolled in the given course.
+     *
+     * @param id the id of the course.
+     * @return a list of the users, empty if no users exist in the course.
+     */
     public List<User> getAllCourseUsers(Long id) {
         return userRepository.findUsersByCoursesCourseId(id);
     }
 
+    /**
+     * Inserts the given course into the database.
+     *
+     * @param course the course to be created.
+     * @return the saved course in the database.
+     */
     public Course createCourse(Course course) {
         return courseRepository.save(course);
     }
 
+    /**
+     * Adds the given user to the course with the given id.
+     *
+     * @param courseId the id of the course.
+     * @param userToAdd the user to be added to the course.
+     * @return the added {@code User} if the action was successful.
+     * @throws ResourceNotFoundException if the user or course were not found.
+     */
     public User addUserToCourse(Long courseId, User userToAdd) {
         Course course = courseRepository.findById(courseId)
             .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
@@ -48,28 +88,53 @@ public class CourseService {
         return user;
     }
 
+    /**
+     * Updates the course with the given id with the new course details.
+     *
+     * @param id the id of the course.
+     * @param courseDetails the new course details.
+     * @return the updated course.
+     * @throws ResourceNotFoundException if the course was not found.
+     */
     public Course updateCourse(Long id, Course courseDetails) {
-        Optional<Course> course = courseRepository.findById(id);
-        if (course.isEmpty()) {
-            return null;
-        }
-        Course existingCourse = course.get();
-        existingCourse.setName(courseDetails.getName());
-        existingCourse.setDescription(courseDetails.getDescription());
-        existingCourse.setMaxCapacity(courseDetails.getMaxCapacity());
-        existingCourse.setNumberOfStudents(courseDetails.getNumberOfStudents());
+        Course course = courseRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
+        course.setName(courseDetails.getName());
+        course.setDescription(courseDetails.getDescription());
+        course.setMaxCapacity(courseDetails.getMaxCapacity());
+        course.setNumberOfStudents(courseDetails.getNumberOfStudents());
 
-        return courseRepository.save(existingCourse);
+        return courseRepository.save(course);
     }
 
+    /**
+     * Deletes all courses.
+     */
     public void deleteAllCourses() {
         courseRepository.deleteAll();
     }
 
+    /**
+     * Deletes a course by its id.
+     *
+     * @param id the id of the course.
+     * @throws ResourceNotFoundException if the course was not found.
+     */
     public void deleteCourse(Long id) {
+        if (!existsCourse(id)) {
+            throw new ResourceNotFoundException("Course not found");
+        }
         courseRepository.deleteById(id);
     }
 
+    /**
+     * Removes the given user from the course with the given id.
+     *
+     * @param courseId the id of the course.
+     * @param userToRemove the user to be removed from the course.
+     * @return the removed {@code User} if the action was successful.
+     * @throws ResourceNotFoundException if the user or course were not found.
+     */
     public User removeUserFromCourse(Long courseId, User userToRemove) {
         Course course = courseRepository.findById(courseId)
             .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
