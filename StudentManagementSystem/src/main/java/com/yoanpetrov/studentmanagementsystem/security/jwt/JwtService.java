@@ -19,6 +19,7 @@ import java.util.function.Function;
 
 // TODO: 24-Oct-23 Set the expiration times of the JWT tokens to normal values.
 // TODO: 24-Oct-23 Change validation logic to use the Jwts library to verify the tokens.
+
 /**
  * JWT service. Used to extract different claims from a JWT token or validate it.
  */
@@ -37,7 +38,7 @@ public class JwtService {
     /**
      * Validates a JWT token.
      *
-     * @param token the token.
+     * @param token       the token.
      * @param userDetails the user to validate the token against.
      * @return true if the token is not expired and represents the same user, false otherwise.
      */
@@ -61,15 +62,15 @@ public class JwtService {
     /**
      * Extract a claim from the JWT token, using the given claim resolver.
      *
-     * @param token the token.
+     * @param token          the token.
      * @param claimsResolver the resolver for the needed claim.
+     * @param <T>            the type of the claim, part of the resolver.
      * @return the extracted claim.
-     * @param <T> the type of the claim, part of the resolver.
      */
     public <T> T extractClaim(
         String token,
-        Function<Claims, T> claimsResolver)
-    {
+        Function<Claims, T> claimsResolver
+    ) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
@@ -93,8 +94,8 @@ public class JwtService {
      */
     public String generateToken(
         Map<String, Object> extraClaims,
-        UserDetails userDetails)
-    {
+        UserDetails userDetails
+    ) {
         LOG.debug("Generating JWT token");
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
@@ -150,14 +151,14 @@ public class JwtService {
      *
      * @param extraClaims the extra claims to include in the token.
      * @param userDetails the user to build the token for.
-     * @param expiration the expiration time of the token.
+     * @param expiration  the expiration time of the token.
      * @return the newly built JWT token.
      */
     private String buildToken(
         Map<String, Object> extraClaims,
         UserDetails userDetails,
-        long expiration)
-    {
+        long expiration
+    ) {
         LOG.debug("Building JWT token for {} with expiration time of {} ms", userDetails.getUsername(), expiration);
         return Jwts
             .builder()

@@ -107,7 +107,10 @@ public class UserController {
      * 404 if the user or the course weren't found.
      */
     @PostMapping("/{userId}/courses")
-    public ResponseEntity<Course> addCourseToUser(@PathVariable Long userId, @RequestBody Course requestCourse) {
+    public ResponseEntity<Course> addCourseToUser(
+        @PathVariable Long userId,
+        @RequestBody Course requestCourse
+    ) {
         LOG.debug("Adding course to user with id {}", userId);
         try {
             Course course = userService.addCourseToUser(userId, requestCourse);
@@ -127,7 +130,10 @@ public class UserController {
      * 404 if the user was not found.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
+    public ResponseEntity<User> updateUser(
+        @PathVariable Long id,
+        @RequestBody User userDetails
+    ) {
         LOG.debug("Updating user with id {}", id);
         try {
             User user = userService.updateUser(id, userDetails);
@@ -178,7 +184,10 @@ public class UserController {
      * 404 if the user or the course weren't found.
      */
     @DeleteMapping("/{userId}/courses")
-    public ResponseEntity<Course> removeCourseFromUser(@PathVariable Long userId, @RequestBody Course requestCourse) {
+    public ResponseEntity<Course> removeCourseFromUser(
+        @PathVariable Long userId,
+        @RequestBody Course requestCourse
+    ) {
         LOG.debug("Removing course from user with id {}", userId);
         try {
             Course course = userService.removeCourseFromUser(userId, requestCourse);

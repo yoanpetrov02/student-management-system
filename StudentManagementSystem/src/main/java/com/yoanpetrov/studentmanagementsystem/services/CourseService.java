@@ -78,7 +78,7 @@ public class CourseService {
     /**
      * Adds the given user to the course with the given id.
      *
-     * @param courseId the id of the course.
+     * @param courseId  the id of the course.
      * @param userToAdd the user to be added to the course.
      * @return the added {@code User} if the action was successful.
      * @throws ResourceNotFoundException if the user or course were not found.
@@ -96,7 +96,7 @@ public class CourseService {
     /**
      * Updates the course with the given id with the new course details.
      *
-     * @param id the id of the course.
+     * @param id            the id of the course.
      * @param courseDetails the new course details.
      * @return the updated course.
      * @throws ResourceNotFoundException if the course was not found.
@@ -135,7 +135,7 @@ public class CourseService {
     /**
      * Removes the given user from the course with the given id.
      *
-     * @param courseId the id of the course.
+     * @param courseId     the id of the course.
      * @param userToRemove the user to be removed from the course.
      * @return the removed {@code User} if the action was successful.
      * @throws ResourceNotFoundException if the user or course were not found.

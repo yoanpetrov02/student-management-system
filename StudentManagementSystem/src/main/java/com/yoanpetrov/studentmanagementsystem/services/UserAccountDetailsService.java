@@ -29,9 +29,7 @@ public class UserAccountDetailsService implements UserDetailsService {
      * @throws UsernameNotFoundException if a user with that username was not found.
      */
     @Override
-    public UserDetails loadUserByUsername(String username)
-        throws UsernameNotFoundException
-    {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         LOG.debug("Loading user by username: {}", username);
         return repository.findByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
