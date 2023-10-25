@@ -55,7 +55,7 @@ public class UserService {
      * Gets all courses the given user is enrolled in.
      *
      * @param id the id of the user.
-     * @return a list of the courses, empty if the user if not enrolled in any courses.
+     * @return a list of the courses, empty if the user is not enrolled in any courses.
      * @throws ResourceNotFoundException if the user was not found.
      */
     public List<Course> getAllUserCourses(Long id) {
