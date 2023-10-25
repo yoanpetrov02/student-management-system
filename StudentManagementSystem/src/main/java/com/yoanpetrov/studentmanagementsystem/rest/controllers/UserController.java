@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,9 +46,12 @@ public class UserController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        User user = userService.getUserById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        try {
+            User user = userService.getUserById(id);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     /**
@@ -60,23 +64,25 @@ public class UserController {
      */
     @GetMapping("/{id}/courses")
     public ResponseEntity<List<Course>> getAllUserCourses(@PathVariable Long id) {
-        if (!userService.existsUser(id)) {
-            throw new ResourceNotFoundException("User not found");
+        try {
+            List<Course> courses = userService.getAllUserCourses(id);
+            if (courses.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(courses, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        List<Course> courses = userService.getAllUserCourses(id);
-        if (courses.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(courses, HttpStatus.OK);
     }
 
     /**
      * Creates the given {@code User}.
+     *
      * @param user the user to be created.
      * @return 200 and the created user if it was successfully created.
      */
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) { // TODO: 02-Oct-23 check if user already exists first
+    public ResponseEntity<User> createUser(@RequestBody User user) {
         User createdUser = userService.createUser(user);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
@@ -84,32 +90,37 @@ public class UserController {
     /**
      * Adds a course to a user.
      *
-     * @param userId the id of the user.
+     * @param userId        the id of the user.
      * @param requestCourse the {@code Course} to be added to the user.
      * @return 201 with the course if the action was successful,
      * 404 if the user or the course weren't found.
      */
     @PostMapping("/{userId}/courses")
     public ResponseEntity<Course> addCourseToUser(@PathVariable Long userId, @RequestBody Course requestCourse) {
-        Course course = userService.addCourseToUser(userId, requestCourse);
-        return new ResponseEntity<>(course, HttpStatus.CREATED);
+        try {
+            Course course = userService.addCourseToUser(userId, requestCourse);
+            return new ResponseEntity<>(course, HttpStatus.CREATED);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     /**
      * Updates the user with the given id with the new user details.
      *
-     * @param id the id of the existing user.
+     * @param id          the id of the existing user.
      * @param userDetails the new details of the user.
      * @return 200 and the changed user if the action was successful,
      * 404 if the user was not found.
      */
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
-        if (!userService.existsUser(id)) {
-            throw new ResourceNotFoundException("User not found");
+        try {
+            User user = userService.updateUser(id, userDetails);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        User user = userService.updateUser(id, userDetails);
-        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     /**
@@ -132,24 +143,29 @@ public class UserController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
-        if (!userService.existsUser(id)) {
-            throw new ResourceNotFoundException("User not found");
+        try {
+            userService.deleteUser(id);
+            return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        userService.deleteUser(id);
-        return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
     }
 
     /**
      * Removes a course from a user.
      *
-     * @param userId the id of the user.
+     * @param userId        the id of the user.
      * @param requestCourse the {@code Course} to be removed from the user.
      * @return 201 with the course if the action was successful,
      * 404 if the user or the course weren't found.
      */
     @DeleteMapping("/{userId}/courses")
     public ResponseEntity<Course> removeCourseFromUser(@PathVariable Long userId, @RequestBody Course requestCourse) {
-        Course course = userService.removeCourseFromUser(userId, requestCourse);
-        return new ResponseEntity<>(course, HttpStatus.OK);
+        try {
+            Course course = userService.removeCourseFromUser(userId, requestCourse);
+            return new ResponseEntity<>(course, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

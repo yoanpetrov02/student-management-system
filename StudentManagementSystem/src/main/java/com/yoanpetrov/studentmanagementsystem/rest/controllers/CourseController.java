@@ -45,9 +45,12 @@ public class CourseController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Course> getCourseById(@PathVariable Long id) {
-        Course course = courseService.getCourseById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
-        return new ResponseEntity<>(course, HttpStatus.OK);
+        try {
+            Course course = courseService.getCourseById(id);
+            return new ResponseEntity<>(course, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     /**
@@ -60,23 +63,25 @@ public class CourseController {
      */
     @GetMapping("/{id}/users")
     public ResponseEntity<List<User>> getAllCourseUsers(@PathVariable Long id) {
-        if (!courseService.existsCourse(id)) {
-            throw new ResourceNotFoundException("Course not found");
+        try {
+            List<User> users = courseService.getAllCourseUsers(id);
+            if (users.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(users, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        List<User> users = courseService.getAllCourseUsers(id);
-        if (users.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     /**
      * Creates the given {@code Course}.
+     *
      * @param course the course to be created.
      * @return 200 and the created course if it was successfully created.
      */
     @PostMapping
-    public ResponseEntity<Course> createCourse(@RequestBody Course course) { // TODO: 02-Oct-23 check if course already exists first
+    public ResponseEntity<Course> createCourse(@RequestBody Course course) {
         Course createdCourse = courseService.createCourse(course);
         return new ResponseEntity<>(createdCourse, HttpStatus.CREATED);
     }
@@ -84,32 +89,37 @@ public class CourseController {
     /**
      * Adds a user to a course.
      *
-     * @param courseId the id of the course.
+     * @param courseId    the id of the course.
      * @param requestUser the {@code User} to be added to the course.
      * @return 201 with the user if the action was successful,
      * 404 if the user or the course weren't found.
      */
     @PostMapping("/{courseId}/users")
     public ResponseEntity<User> addUserToCourse(@PathVariable Long courseId, @RequestBody User requestUser) {
-        User user = courseService.addUserToCourse(courseId, requestUser);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+        try {
+            User user = courseService.addUserToCourse(courseId, requestUser);
+            return new ResponseEntity<>(user, HttpStatus.CREATED);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     /**
      * Updates the course with the given id with the new course details.
      *
-     * @param id the id of the existing course.
+     * @param id            the id of the existing course.
      * @param courseDetails the new details of the course.
      * @return 200 and the changed course if the action was successful,
      * 404 if the course was not found.
      */
     @PutMapping("/{id}")
     public ResponseEntity<Course> updateCourse(@PathVariable Long id, @RequestBody Course courseDetails) {
-        if (!courseService.existsCourse(id)) {
-            throw new ResourceNotFoundException("Course not found");
+        try {
+            Course course = courseService.updateCourse(id, courseDetails);
+            return new ResponseEntity<>(course, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Course course = courseService.updateCourse(id, courseDetails);
-        return new ResponseEntity<>(course, HttpStatus.OK);
     }
 
     /**
@@ -132,24 +142,29 @@ public class CourseController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCourse(@PathVariable Long id) {
-        if (!courseService.existsCourse(id)) {
-            throw new ResourceNotFoundException("Course not found");
+        try {
+            courseService.deleteCourse(id);
+            return new ResponseEntity<>("Course deleted successfully", HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        courseService.deleteCourse(id);
-        return new ResponseEntity<>("Course deleted successfully", HttpStatus.OK);
     }
 
     /**
      * Removes a user from a course.
      *
-     * @param courseId the id of the course.
+     * @param courseId    the id of the course.
      * @param requestUser the {@code User} to be removed from the course.
      * @return 200 with the user if the action was successful,
      * 404 if the user or the course weren't found.
      */
     @DeleteMapping("/{courseId}/users")
     public ResponseEntity<User> removeUserFromCourse(@PathVariable Long courseId, @RequestBody User requestUser) {
-        User user = courseService.removeUserFromCourse(courseId, requestUser);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        try {
+            User user = courseService.removeUserFromCourse(courseId, requestUser);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
