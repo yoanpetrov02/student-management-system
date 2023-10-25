@@ -4,6 +4,8 @@ import com.yoanpetrov.studentmanagementsystem.rest.dto.UserAccountDto;
 import com.yoanpetrov.studentmanagementsystem.security.AuthenticationResponse;
 import com.yoanpetrov.studentmanagementsystem.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/register")
 public class RegisterController {
 
+    private static final Logger LOG = LoggerFactory.getLogger(RegisterController.class);
+
     private final AuthenticationService authenticationService;
 
     /**
@@ -28,13 +32,13 @@ public class RegisterController {
      */
     @PostMapping
     public ResponseEntity<AuthenticationResponse> registerUser(@RequestBody UserAccountDto userDto) {
-        String username = userDto.getUsername();
-        String password = userDto.getPassword();
-
-        if (authenticationService.checkUserExistence(username)) {
+        LOG.debug("Attempting to register user account");
+        if (authenticationService.checkUserExistence(userDto.getUsername())) {
+            LOG.debug("Account with the same username already exists, returning 409");
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         AuthenticationResponse response = authenticationService.registerAccount(userDto);
+        LOG.debug("Successful registration, generated token is {}", response.getToken());
         return ResponseEntity.ok(response);
     }
 }

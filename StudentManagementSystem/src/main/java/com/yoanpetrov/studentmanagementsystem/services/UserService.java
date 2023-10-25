@@ -9,10 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
- * User service. Used to perform business logic on useres.
+ * User service. Used to perform business logic on users.
  */
 @RequiredArgsConstructor
 @Service
@@ -44,19 +43,25 @@ public class UserService {
      * Gets a single user from the database by its id.
      *
      * @param id the id of the user.
-     * @return an {@code Optional} with the user if it exists, or with null if it doesn't exist.
+     * @return the user, if it exists.
+     * @throws ResourceNotFoundException if the user was not found.
      */
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     /**
      * Gets all courses the given user is enrolled in.
      *
      * @param id the id of the user.
-     * @return a list of the courses, empty if the user if not enrolled in any courses.
+     * @return a list of the courses, empty if the user is not enrolled in any courses.
+     * @throws ResourceNotFoundException if the user was not found.
      */
     public List<Course> getAllUserCourses(Long id) {
+        if (!existsUser(id)) {
+            throw new ResourceNotFoundException("User not found");
+        }
         return courseRepository.findCoursesByUsersUserId(id);
     }
 
@@ -73,7 +78,7 @@ public class UserService {
     /**
      * Adds the given course to the user with the given id.
      *
-     * @param userId the id of the user.
+     * @param userId      the id of the user.
      * @param courseToAdd the course to be added to the user.
      * @return the added {@code Course} if the action was successful.
      * @throws ResourceNotFoundException if the user or course were not found.
@@ -91,14 +96,14 @@ public class UserService {
     /**
      * Updates the user with the given id with the new user details.
      *
-     * @param id the id of the user.
+     * @param id          the id of the user.
      * @param userDetails the new user details.
      * @return the updated user.
      * @throws ResourceNotFoundException if the user was not found.
      */
     public User updateUser(Long id, User userDetails) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         user.setFirstName(userDetails.getFirstName());
         user.setLastName(userDetails.getLastName());
         user.setEmail(userDetails.getEmail());
@@ -129,7 +134,7 @@ public class UserService {
     /**
      * Removes the given course from the user with the given id.
      *
-     * @param userId the id of the user.
+     * @param userId         the id of the user.
      * @param courseToRemove the course to be removed from the user.
      * @return the removed {@code Course} if the action was successful.
      * @throws ResourceNotFoundException if the user or course were not found.

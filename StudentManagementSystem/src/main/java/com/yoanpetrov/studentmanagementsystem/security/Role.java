@@ -7,7 +7,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -21,9 +20,7 @@ public enum Role {
     // TODO: 19-Oct-23 Figure out the roles
     USER(Collections.emptySet()),
     TEACHER(Collections.emptySet()),
-    ADMIN(Collections.emptySet())
-
-    ;
+    ADMIN(Collections.emptySet());
 
     private final Set<Permission> permissions;
 

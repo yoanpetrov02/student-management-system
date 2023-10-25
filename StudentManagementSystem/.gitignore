@@ -40,3 +40,5 @@ build/
 ### Spring ###
 application.properties
 application.yml
+
+logs/*

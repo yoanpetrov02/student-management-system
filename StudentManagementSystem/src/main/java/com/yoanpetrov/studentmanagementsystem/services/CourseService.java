@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Course service. Used to perform business logic on courses.
@@ -44,10 +43,12 @@ public class CourseService {
      * Gets a single course from the database by its id.
      *
      * @param id the id of the course.
-     * @return an {@code Optional} with the course if it exists, or with null if it doesn't exist.
+     * @return the course, if it exists.
+     * @throws ResourceNotFoundException if the course was not found.
      */
-    public Optional<Course> getCourseById(Long id) {
-        return courseRepository.findById(id);
+    public Course getCourseById(Long id) {
+        return courseRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
     }
 
     /**
@@ -55,8 +56,12 @@ public class CourseService {
      *
      * @param id the id of the course.
      * @return a list of the users, empty if no users exist in the course.
+     * @throws ResourceNotFoundException if the course was not found.
      */
     public List<User> getAllCourseUsers(Long id) {
+        if (!existsCourse(id)) {
+            throw new ResourceNotFoundException("Course not found");
+        }
         return userRepository.findUsersByCoursesCourseId(id);
     }
 
@@ -73,7 +78,7 @@ public class CourseService {
     /**
      * Adds the given user to the course with the given id.
      *
-     * @param courseId the id of the course.
+     * @param courseId  the id of the course.
      * @param userToAdd the user to be added to the course.
      * @return the added {@code User} if the action was successful.
      * @throws ResourceNotFoundException if the user or course were not found.
@@ -91,7 +96,7 @@ public class CourseService {
     /**
      * Updates the course with the given id with the new course details.
      *
-     * @param id the id of the course.
+     * @param id            the id of the course.
      * @param courseDetails the new course details.
      * @return the updated course.
      * @throws ResourceNotFoundException if the course was not found.
@@ -130,7 +135,7 @@ public class CourseService {
     /**
      * Removes the given user from the course with the given id.
      *
-     * @param courseId the id of the course.
+     * @param courseId     the id of the course.
      * @param userToRemove the user to be removed from the course.
      * @return the removed {@code User} if the action was successful.
      * @throws ResourceNotFoundException if the user or course were not found.

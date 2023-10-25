@@ -61,7 +61,7 @@ public class AuthenticationService {
      *
      * @param userAccountDto the user's credentials.
      * @return an {@code AuthenticationResponse} with a JWT token if the account is successfully authenticated.
-     * @throws BadCredentialsException if the password is wrong.
+     * @throws BadCredentialsException   if the password is wrong.
      * @throws ResourceNotFoundException if a user account with that username does not exist.
      */
     public AuthenticationResponse authenticateUser(UserAccountDto userAccountDto) {
