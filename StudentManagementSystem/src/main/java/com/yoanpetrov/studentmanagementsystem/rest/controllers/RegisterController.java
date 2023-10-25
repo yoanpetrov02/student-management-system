@@ -28,10 +28,7 @@ public class RegisterController {
      */
     @PostMapping
     public ResponseEntity<AuthenticationResponse> registerUser(@RequestBody UserAccountDto userDto) {
-        String username = userDto.getUsername();
-        String password = userDto.getPassword();
-
-        if (authenticationService.checkUserExistence(username)) {
+        if (authenticationService.checkUserExistence(userDto.getUsername())) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         AuthenticationResponse response = authenticationService.registerAccount(userDto);
