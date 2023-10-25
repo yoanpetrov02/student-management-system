@@ -5,6 +5,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,8 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(JwtService.class);
+
     @Value("${application.security.jwt.secret-key}")
     private String secretKey;
     @Value("${application.security.jwt.expiration}")
@@ -38,6 +42,7 @@ public class JwtService {
      * @return true if the token is not expired and represents the same user, false otherwise.
      */
     public boolean isTokenValid(String token, UserDetails userDetails) {
+        LOG.debug("Validating token {} against user {}", token, userDetails.getUsername());
         final String username = extractUsername(token);
         return username.equals(userDetails.getUsername())
             && !isTokenExpired(token);
@@ -90,6 +95,7 @@ public class JwtService {
         Map<String, Object> extraClaims,
         UserDetails userDetails)
     {
+        LOG.debug("Generating JWT token");
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
 
@@ -100,6 +106,7 @@ public class JwtService {
      * @return the generated refresh token.
      */
     public String generateRefreshToken(UserDetails userDetails) {
+        LOG.debug("Generating JWT refresh token");
         return buildToken(new HashMap<>(), userDetails, refreshExpiration);
     }
 
@@ -151,6 +158,7 @@ public class JwtService {
         UserDetails userDetails,
         long expiration)
     {
+        LOG.debug("Building JWT token for {} with expiration time of {} ms", userDetails.getUsername(), expiration);
         return Jwts
             .builder()
             .setClaims(extraClaims)
