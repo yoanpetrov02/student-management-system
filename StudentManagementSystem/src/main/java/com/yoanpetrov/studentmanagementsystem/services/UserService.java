@@ -44,10 +44,12 @@ public class UserService {
      * Gets a single user from the database by its id.
      *
      * @param id the id of the user.
-     * @return an {@code Optional} with the user if it exists, or with null if it doesn't exist.
+     * @return the user, if it exists.
+     * @throws ResourceNotFoundException if the user was not found.
      */
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     /**
@@ -55,8 +57,12 @@ public class UserService {
      *
      * @param id the id of the user.
      * @return a list of the courses, empty if the user if not enrolled in any courses.
+     * @throws ResourceNotFoundException if the user was not found.
      */
     public List<Course> getAllUserCourses(Long id) {
+        if (!existsUser(id)) {
+            throw new ResourceNotFoundException("User not found");
+        }
         return courseRepository.findCoursesByUsersUserId(id);
     }
 

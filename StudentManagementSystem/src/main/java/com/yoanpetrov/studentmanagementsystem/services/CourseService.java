@@ -44,10 +44,12 @@ public class CourseService {
      * Gets a single course from the database by its id.
      *
      * @param id the id of the course.
-     * @return an {@code Optional} with the course if it exists, or with null if it doesn't exist.
+     * @return the course, if it exists.
+     * @throws ResourceNotFoundException if the course was not found.
      */
-    public Optional<Course> getCourseById(Long id) {
-        return courseRepository.findById(id);
+    public Course getCourseById(Long id) {
+        return courseRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
     }
 
     /**
@@ -55,8 +57,12 @@ public class CourseService {
      *
      * @param id the id of the course.
      * @return a list of the users, empty if no users exist in the course.
+     * @throws ResourceNotFoundException if the course was not found.
      */
     public List<User> getAllCourseUsers(Long id) {
+        if (!existsCourse(id)) {
+            throw new ResourceNotFoundException("Course not found");
+        }
         return userRepository.findUsersByCoursesCourseId(id);
     }
 
