@@ -5,6 +5,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,6 +29,8 @@ import java.io.IOException;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
+    private static final Logger LOG = LoggerFactory.getLogger(JwtRequestFilter.class);
+
     private static final int BEARER_TOKEN_START = 7;
 
     private final UserDetailsService userDetailsService;
@@ -47,8 +51,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         @NonNull HttpServletResponse response,
         @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
+        LOG.debug("Filtering request");
         final String authHeader = request.getHeader("Authorization");
         if (!validateAuthHeader(authHeader)) {
+            LOG.debug("Authorization header not valid, passing the request further down the filter chain");
             filterChain.doFilter(request, response);
             return;
         }
@@ -57,12 +63,19 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         if (username != null && noExistingAuthentication()) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-                var authToken = createAuthToken(userDetails);
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                setAuthentication(authToken);
+            if (!jwtService.isTokenValid(jwt, userDetails)) {
+                LOG.debug("Unsuccessful token validation, passing the request further down the filter chain");
+                filterChain.doFilter(request, response);
+                return;
             }
+            LOG.debug("Creating authentication token for user {}", userDetails.getUsername());
+            var authToken = createAuthToken(userDetails);
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            setAuthentication(authToken);
+        } else {
+            LOG.debug("Username is invalid or an authentication already exists");
         }
+        LOG.debug("Successful JWT validation, passing the request further down the filter chain");
         filterChain.doFilter(request, response);
     }
 
@@ -104,6 +117,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
      * @param authentication the auth token.
      */
     private void setAuthentication(Authentication authentication) {
+        LOG.debug("Setting the current authentication in the SecurityContext");
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }
