@@ -5,11 +5,12 @@ import com.yoanpetrov.studentmanagementsystem.entities.Course;
 import com.yoanpetrov.studentmanagementsystem.entities.User;
 import com.yoanpetrov.studentmanagementsystem.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,6 +20,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
     private final UserService userService;
 
@@ -30,8 +33,10 @@ public class UserController {
      */
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
+        LOG.debug("Getting all users");
         List<User> users = userService.getAllUsers();
         if (users.isEmpty()) {
+            LOG.debug("No existing users, returning 204");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(users, HttpStatus.OK);
@@ -46,10 +51,12 @@ public class UserController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        LOG.debug("Getting user with id {}", id);
         try {
             User user = userService.getUserById(id);
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
+            LOG.debug("The user was not found, returning 404");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -64,13 +71,16 @@ public class UserController {
      */
     @GetMapping("/{id}/courses")
     public ResponseEntity<List<Course>> getAllUserCourses(@PathVariable Long id) {
+        LOG.debug("Getting all courses of user with id {}", id);
         try {
             List<Course> courses = userService.getAllUserCourses(id);
             if (courses.isEmpty()) {
+                LOG.debug("No existing courses in user, returning 204");
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
             return new ResponseEntity<>(courses, HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
+            LOG.debug("The user was not found, returning 404");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -83,6 +93,7 @@ public class UserController {
      */
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
+        LOG.debug("Creating new user");
         User createdUser = userService.createUser(user);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
@@ -97,10 +108,12 @@ public class UserController {
      */
     @PostMapping("/{userId}/courses")
     public ResponseEntity<Course> addCourseToUser(@PathVariable Long userId, @RequestBody Course requestCourse) {
+        LOG.debug("Adding course to user with id {}", userId);
         try {
             Course course = userService.addCourseToUser(userId, requestCourse);
             return new ResponseEntity<>(course, HttpStatus.CREATED);
         } catch (ResourceNotFoundException e) {
+            LOG.debug("The course or the user were not found, returning 404");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -115,10 +128,12 @@ public class UserController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
+        LOG.debug("Updating user with id {}", id);
         try {
             User user = userService.updateUser(id, userDetails);
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
+            LOG.debug("The user was not found, returning 404");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -130,6 +145,7 @@ public class UserController {
      */
     @DeleteMapping
     public ResponseEntity<String> deleteAllUsers() {
+        LOG.debug("Deleting all users");
         userService.deleteAllUsers();
         return new ResponseEntity<>("All users have been deleted successfully", HttpStatus.OK);
     }
@@ -143,10 +159,12 @@ public class UserController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        LOG.debug("Deleting user with id {}", id);
         try {
             userService.deleteUser(id);
             return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
+            LOG.debug("The user was not found, returning 404");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -161,10 +179,12 @@ public class UserController {
      */
     @DeleteMapping("/{userId}/courses")
     public ResponseEntity<Course> removeCourseFromUser(@PathVariable Long userId, @RequestBody Course requestCourse) {
+        LOG.debug("Removing course from user with id {}", userId);
         try {
             Course course = userService.removeCourseFromUser(userId, requestCourse);
             return new ResponseEntity<>(course, HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
+            LOG.debug("The course or the user were not found, returning 404");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
