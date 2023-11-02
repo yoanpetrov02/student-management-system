@@ -52,6 +52,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         LOG.debug("Filtering request");
+        if (request.getServletPath().matches("api/v1/(login|register)")) {
+            LOG.debug("Request to auth endpoints, skipping the filtering");
+            filterChain.doFilter(request, response);
+            return;
+        }
         final String authHeader = request.getHeader("Authorization");
         if (!validateAuthHeader(authHeader)) {
             LOG.debug("Authorization header not valid, passing the request further down the filter chain");
@@ -64,18 +69,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         if (username != null && noExistingAuthentication()) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             if (!jwtService.isTokenValid(jwt, userDetails)) {
-                LOG.debug("Unsuccessful token validation, passing the request further down the filter chain");
+                LOG.debug("Invalid JWT token, passing the request further down the filter chain");
                 filterChain.doFilter(request, response);
                 return;
             }
-            LOG.debug("Creating authentication token for user {}", userDetails.getUsername());
+            LOG.debug("Valid JWT token, creating authentication token for user {}", userDetails.getUsername());
             var authToken = createAuthToken(userDetails);
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             setAuthentication(authToken);
-        } else {
-            LOG.debug("Username is invalid or an authentication already exists");
         }
-        LOG.debug("Successful JWT validation, passing the request further down the filter chain");
+        LOG.debug("Passing the request further down the filter chain");
         filterChain.doFilter(request, response);
     }
 
