@@ -27,6 +27,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfiguration {
 
+    private static final String[] WHITELISTED_ENDPOINTS = {
+        "/api/v1/register",
+        "/api/v1/login"
+    };
+
     private final JwtRequestFilter jwtRequestFilter;
     private final UserAccountDetailsService userAccountDetailsService;
 
@@ -45,7 +50,7 @@ public class SecurityConfiguration {
         http
             .authorizeHttpRequests(c ->
                 c
-                    .requestMatchers("/api/v1/login", "/api/v1/register").permitAll()
+                    .requestMatchers(WHITELISTED_ENDPOINTS).permitAll()
                     .anyRequest().authenticated())
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(c ->
