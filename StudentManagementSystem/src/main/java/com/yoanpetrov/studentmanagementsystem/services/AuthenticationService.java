@@ -55,7 +55,7 @@ public class AuthenticationService {
         UserAccount userAccount = UserAccount.builder()
             .username(username)
             .password(encoder.encode(password))
-            .role(Role.USER)
+            .role(Role.STUDENT)
             .build();
         userAccount.setUser(new User()); // create a new User for each UserAccount
         accountRepository.save(userAccount);
