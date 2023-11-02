@@ -8,12 +8,17 @@ import com.yoanpetrov.studentmanagementsystem.rest.dto.UserAccountDto;
 import com.yoanpetrov.studentmanagementsystem.security.AuthenticationResponse;
 import com.yoanpetrov.studentmanagementsystem.security.Role;
 import com.yoanpetrov.studentmanagementsystem.security.jwt.JwtService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 /**
  * Authentication service. User to register and authenticate users.
@@ -56,11 +61,10 @@ public class AuthenticationService {
         accountRepository.save(userAccount);
 
         var jwtToken = jwtService.generateToken(userAccount);
-        var refreshToken = jwtService.generateRefreshToken(userAccount);
 
         return AuthenticationResponse.builder()
             .accessToken(jwtToken)
-            .refreshToken(refreshToken)
+            .refreshToken("")
             .build();
     }
 
@@ -81,11 +85,33 @@ public class AuthenticationService {
             .orElseThrow(() -> new ResourceNotFoundException("The user account does not exist"));
 
         var jwtToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
 
         return AuthenticationResponse.builder()
             .accessToken(jwtToken)
-            .refreshToken(refreshToken)
+            .refreshToken("")
             .build();
+    }
+
+    public AuthenticationResponse refreshToken(HttpServletRequest request) {
+       final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+       final String oldJwtToken;
+       final String username;
+
+       if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+           return new AuthenticationResponse("", "");
+       }
+       oldJwtToken = authHeader.substring(7);
+       username = jwtService.extractUsername(oldJwtToken);
+       if (username != null) {
+           var user = accountRepository.findByUsername(username)
+               .orElseThrow(() -> new ResourceNotFoundException("User account not found"));
+           if (jwtService.isTokenValid(oldJwtToken, user)) {
+               var refreshToken = jwtService.generateRefreshToken(user);
+               return AuthenticationResponse.builder()
+                   .accessToken("")
+                   .refreshToken(refreshToken).build();
+           }
+       }
+       return new AuthenticationResponse("", "");
     }
 }
