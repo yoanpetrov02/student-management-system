@@ -1,5 +1,6 @@
 package com.yoanpetrov.studentmanagementsystem.rest.controllers;
 
+import com.yoanpetrov.studentmanagementsystem.exceptions.ResourceNotFoundException;
 import com.yoanpetrov.studentmanagementsystem.rest.dto.UserAccountDto;
 import com.yoanpetrov.studentmanagementsystem.security.AuthenticationResponse;
 import com.yoanpetrov.studentmanagementsystem.services.AuthenticationService;
@@ -35,19 +36,18 @@ public class LoginController {
      * 401 if the credentials weren't correct.
      */
     @PostMapping
-    public ResponseEntity<AuthenticationResponse> authenticateUser(@RequestBody UserAccountDto userDto) {
+    public ResponseEntity<?> authenticateUser(@RequestBody UserAccountDto userDto) {
         LOG.debug("Attempting to authenticate user account: {}", userDto.getUsername());
-        if (!authenticationService.checkUserExistence(userDto.getUsername())) {
-            LOG.debug("Username doesn't exist, returning 404");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         try {
             AuthenticationResponse response = authenticationService.authenticateUser(userDto);
-            LOG.debug("Successful authentication, generated token is {}", response.getToken());
+            LOG.debug("Successful authentication, generated token is {}", response.getAccessToken());
             return ResponseEntity.ok(response);
         } catch (BadCredentialsException e) {
             LOG.debug("Wrong password, returning 401");
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (ResourceNotFoundException e) {
+            LOG.debug("User not found, returning 404");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

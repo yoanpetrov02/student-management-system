@@ -38,7 +38,7 @@ public class RegisterController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         AuthenticationResponse response = authenticationService.registerAccount(userDto);
-        LOG.debug("Successful registration, generated token is {}", response.getToken());
+        LOG.debug("Successful registration, generated token is {}", response.getAccessToken());
         return ResponseEntity.ok(response);
     }
 }
