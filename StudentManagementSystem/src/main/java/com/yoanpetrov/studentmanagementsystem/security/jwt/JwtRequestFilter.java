@@ -21,9 +21,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-// TODO: 24-Oct-23 Add a case where the user is already validated.
-// TODO: 24-Oct-23 Fix any faulty logic.
-
 /**
  * A JWT authentication filter, executed on every incoming request.
  */

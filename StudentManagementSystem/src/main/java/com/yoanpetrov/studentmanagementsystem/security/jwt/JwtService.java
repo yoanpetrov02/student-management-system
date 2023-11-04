@@ -17,9 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-// TODO: 24-Oct-23 Set the expiration times of the JWT tokens to normal values.
-// TODO: 24-Oct-23 Change validation logic to use the Jwts library to verify the tokens.
-
 /**
  * JWT service. Used to extract different claims from a JWT token or validate it.
  */

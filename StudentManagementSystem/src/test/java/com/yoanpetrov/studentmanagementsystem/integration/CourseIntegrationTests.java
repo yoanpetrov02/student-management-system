@@ -2,12 +2,15 @@ package com.yoanpetrov.studentmanagementsystem.integration;
 
 import com.yoanpetrov.studentmanagementsystem.entities.Course;
 import com.yoanpetrov.studentmanagementsystem.entities.User;
+import com.yoanpetrov.studentmanagementsystem.integration.config.TestConfig;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.apache.log4j.BasicConfigurator;
 import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -19,33 +22,20 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-//@WebMvcTest
 @ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Import(TestConfig.class)
 public class CourseIntegrationTests {
 
     private static final String BASE_URI = "api/v1/courses";
 
-    private static final User TEST_USER = User.builder() // TODO: 03-Oct-23 Put these in a Context and autowire them
-        .userId(1L)
-        .firstName("Test")
-        .lastName("User")
-        .email("test@test.com").build();
-
-    private static final Course UPDATED_COURSE = Course.builder()
-        .courseId(1L)
-        .name("Test")
-        .description("Updated test description")
-        .maxCapacity(10)
-        .numberOfStudents(0).build();
-
-    private static final Course TEST_COURSE = Course.builder()
-        .courseId(1L)
-        .name("Test")
-        .description("Test description")
-        .maxCapacity(10)
-        .numberOfStudents(0).build();
+    @Autowired
+    private Course testCourse;
+    @Autowired
+    private Course updatedCourse;
+    @Autowired
+    private User testUser;
 
     @LocalServerPort
     private int port;
@@ -63,7 +53,7 @@ public class CourseIntegrationTests {
     @Order(1)
     @Test
     void testCreateCourse() {
-        with().body(TEST_COURSE)
+        with().body(testCourse)
             .when()
             .contentType(ContentType.JSON)
             .post(BASE_URI)
@@ -80,7 +70,7 @@ public class CourseIntegrationTests {
             .extract().as(Course[].class);
 
         assertThat(courses.length, equalTo(1));
-        assertTrue(Arrays.stream(courses).toList().contains(TEST_COURSE));
+        assertTrue(Arrays.stream(courses).toList().contains(testCourse));
     }
 
     @Order(3)
@@ -99,7 +89,7 @@ public class CourseIntegrationTests {
     @Order(4)
     @Test
     void testUpdateCourse() {
-        with().body(UPDATED_COURSE).when()
+        with().body(updatedCourse).when()
             .contentType(ContentType.JSON)
             .put(BASE_URI + "/1").then()
             .assertThat()
@@ -111,17 +101,17 @@ public class CourseIntegrationTests {
     @Order(5)
     @Test
     void testAddUserToCourse() {
-        with().body(TEST_USER)
+        with().body(testUser)
             .contentType(ContentType.JSON)
             .post("api/v1/users").then()
             .assertThat()
             .statusCode(HttpStatus.CREATED.value());
-        with().body(TEST_USER)
+        with().body(testUser)
             .contentType(ContentType.JSON)
             .post(BASE_URI + "/1/users").then()
             .assertThat()
             .statusCode(HttpStatus.CREATED.value());
-        TEST_COURSE.setNumberOfStudents(TEST_COURSE.getNumberOfStudents() + 1);
+        testCourse.setNumberOfStudents(testCourse.getNumberOfStudents() + 1);
     }
 
     @Order(6)
@@ -132,13 +122,13 @@ public class CourseIntegrationTests {
             .extract().as(User[].class);
 
         assertThat(users.length, equalTo(1));
-        assertTrue(Arrays.stream(users).toList().contains(TEST_USER));
+        assertTrue(Arrays.stream(users).toList().contains(testUser));
     }
 
     @Order(7)
     @Test
     void testRemoveUserFromCourse() {
-        with().body(TEST_USER)
+        with().body(testUser)
             .contentType(ContentType.JSON)
             .delete(BASE_URI + "/1/users").then()
             .assertThat()
@@ -151,8 +141,8 @@ public class CourseIntegrationTests {
     @Order(8)
     @Test
     void testRemoveCourseById() {
-        TEST_COURSE.setCourseId(2L);
-        with().body(TEST_COURSE)
+        testCourse.setCourseId(2L);
+        with().body(testCourse)
             .contentType(ContentType.JSON)
             .post(BASE_URI).then()
             .assertThat()
