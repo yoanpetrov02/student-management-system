@@ -157,7 +157,7 @@ public class CourseController {
     }
 
     /**
-     * Deletes a course by its course id.
+     * Deletes a course by its id.
      *
      * @param id the id of the course to be deleted.
      * @return 200 and a message if the deletion was successful,

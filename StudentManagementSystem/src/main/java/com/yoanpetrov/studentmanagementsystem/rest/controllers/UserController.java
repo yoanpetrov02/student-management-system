@@ -157,7 +157,7 @@ public class UserController {
     }
 
     /**
-     * Deletes a user by its user id.
+     * Deletes a user by its id.
      *
      * @param id the id of the user to be deleted.
      * @return 200 and a message if the deletion was successful,

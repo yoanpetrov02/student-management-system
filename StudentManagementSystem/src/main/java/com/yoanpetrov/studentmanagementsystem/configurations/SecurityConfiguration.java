@@ -1,7 +1,7 @@
 package com.yoanpetrov.studentmanagementsystem.configurations;
 
 import com.yoanpetrov.studentmanagementsystem.security.jwt.JwtRequestFilter;
-import com.yoanpetrov.studentmanagementsystem.services.UserAccountDetailsService;
+import com.yoanpetrov.studentmanagementsystem.services.UserAccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,7 +35,7 @@ public class SecurityConfiguration {
     };
 
     private final JwtRequestFilter jwtRequestFilter;
-    private final UserAccountDetailsService userAccountDetailsService;
+    private final UserAccountService userAccountService;
 
     /**
      * Builds the {@code SecurityFilterChain} bean.
@@ -83,7 +83,7 @@ public class SecurityConfiguration {
     public AuthenticationProvider authenticationProvider() {
         var authProvider = new DaoAuthenticationProvider();
         authProvider.setPasswordEncoder(passwordEncoder());
-        authProvider.setUserDetailsService(userAccountDetailsService);
+        authProvider.setUserDetailsService(userAccountService);
         return authProvider;
     }
 
