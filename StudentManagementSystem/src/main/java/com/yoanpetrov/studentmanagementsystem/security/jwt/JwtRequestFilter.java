@@ -1,5 +1,7 @@
 package com.yoanpetrov.studentmanagementsystem.security.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,35 +53,39 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         @NonNull HttpServletResponse response,
         @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        LOG.debug("Filtering request");
-        if (request.getServletPath().matches("api/v1/(login|register)")) {
-            LOG.debug("Request to auth endpoints, skipping the filtering");
-            filterChain.doFilter(request, response);
-            return;
-        }
-        final String authHeader = request.getHeader("Authorization");
-        if (!validateAuthHeader(authHeader)) {
-            LOG.debug("Authorization header not valid, passing the request further down the filter chain");
-            filterChain.doFilter(request, response);
-            return;
-        }
-        final String jwt = authHeader.substring(BEARER_TOKEN_START);
-        final String username = jwtService.extractUsername(jwt);
-
-        if (username != null && noExistingAuthentication()) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (!jwtService.isTokenValid(jwt, userDetails)) {
-                LOG.debug("Invalid JWT token, passing the request further down the filter chain");
-                filterChain.doFilter(request, response);
+        try {
+            LOG.debug("Filtering request");
+            if (request.getServletPath().matches("api/v1/(login|register)")) {
+                LOG.debug("Request to whitelisted endpoints, skipping the filtering");
                 return;
             }
-            LOG.debug("Valid JWT token, creating authentication token for user {}", userDetails.getUsername());
-            var authToken = createAuthToken(userDetails);
-            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            setAuthentication(authToken);
+            final String authHeader = request.getHeader("Authorization");
+            if (!validateAuthHeader(authHeader)) {
+                LOG.debug("Authorization header not valid, passing the request further down the filter chain");
+                return;
+            }
+            final String jwt = authHeader.substring(BEARER_TOKEN_START);
+            final String username = jwtService.extractUsername(jwt);
+
+            if (username != null && noExistingAuthentication()) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                if (!jwtService.validateToken(jwt, userDetails)) {
+                    LOG.debug("Invalid JWT token, passing the request further down the filter chain");
+                    return;
+                }
+                LOG.debug("Valid JWT token, creating authentication token for user {}", userDetails.getUsername());
+                var authToken = createAuthToken(userDetails);
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                setAuthentication(authToken);
+            }
+        } catch (SignatureException e) {
+            LOG.debug("Invalid JWT signature. Message: {}", e.getMessage());
+        } catch (ExpiredJwtException e) {
+            LOG.debug("The JWT token is expired. Message: {}", e.getMessage());
+        } finally {
+            LOG.debug("Passing the request further down the filter chain");
+            filterChain.doFilter(request, response);
         }
-        LOG.debug("Passing the request further down the filter chain");
-        filterChain.doFilter(request, response);
     }
 
     /**

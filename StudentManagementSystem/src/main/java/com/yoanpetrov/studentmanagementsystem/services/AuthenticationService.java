@@ -9,7 +9,6 @@ import com.yoanpetrov.studentmanagementsystem.security.AuthenticationResponse;
 import com.yoanpetrov.studentmanagementsystem.security.Role;
 import com.yoanpetrov.studentmanagementsystem.security.jwt.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,8 +16,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
 
 /**
  * Authentication service. User to register and authenticate users.
@@ -77,12 +74,13 @@ public class AuthenticationService {
      * @throws ResourceNotFoundException if a user account with that username does not exist.
      */
     public AuthenticationResponse authenticateUser(UserAccountDto userAccountDto) {
+        var user = accountRepository.findByUsername(userAccountDto.getUsername())
+            .orElseThrow(() -> new ResourceNotFoundException("The user account does not exist"));
+
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                 userAccountDto.getUsername(),
                 userAccountDto.getPassword()));
-        var user = accountRepository.findByUsername(userAccountDto.getUsername())
-            .orElseThrow(() -> new ResourceNotFoundException("The user account does not exist"));
 
         var jwtToken = jwtService.generateToken(user);
 
@@ -105,7 +103,7 @@ public class AuthenticationService {
        if (username != null) {
            var user = accountRepository.findByUsername(username)
                .orElseThrow(() -> new ResourceNotFoundException("User account not found"));
-           if (jwtService.isTokenValid(oldJwtToken, user)) {
+           if (jwtService.validateToken(oldJwtToken, user)) {
                var refreshToken = jwtService.generateRefreshToken(user);
                return AuthenticationResponse.builder()
                    .accessToken("")
