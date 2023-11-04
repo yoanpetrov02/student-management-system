@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
+import static com.yoanpetrov.studentmanagementsystem.security.Permission.*;
 
 /**
  * An enum containing all available roles of users.
@@ -17,10 +18,30 @@ import java.util.stream.Collectors;
 @Getter
 @RequiredArgsConstructor
 public enum Role {
-    // TODO: 19-Oct-23 Figure out the roles
-    USER(Collections.emptySet()),
-    TEACHER(Collections.emptySet()),
-    ADMIN(Collections.emptySet());
+
+    ADMIN(
+      Set.of(
+          ADMIN_CREATE,
+          ADMIN_READ,
+          ADMIN_UPDATE,
+          ADMIN_DELETE,
+          TEACHER_CREATE,
+          TEACHER_READ,
+          TEACHER_UPDATE,
+          TEACHER_DELETE
+      )),
+
+    TEACHER(
+        Set.of(
+            TEACHER_CREATE,
+            TEACHER_READ,
+            TEACHER_UPDATE,
+            TEACHER_DELETE
+        )),
+
+    STUDENT(Collections.emptySet())
+
+    ;
 
     private final Set<Permission> permissions;
 

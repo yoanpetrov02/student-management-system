@@ -6,9 +6,6 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.apache.log4j.BasicConfigurator;
 import org.junit.jupiter.api.*;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -54,18 +51,18 @@ public class CourseIntegrationTests {
     private int port;
 
     @BeforeAll
-    public static void setupLogger() {
+    static void setupLogger() {
         BasicConfigurator.configure(); // configures logger
     }
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         RestAssured.port = port;
     }
 
     @Order(1)
     @Test
-    public void testCreateCourse() {
+    void testCreateCourse() {
         with().body(TEST_COURSE)
             .when()
             .contentType(ContentType.JSON)
@@ -77,7 +74,7 @@ public class CourseIntegrationTests {
 
     @Order(2)
     @Test
-    public void testGetAllCourses() {
+    void testGetAllCourses() {
         Course[] courses = get(BASE_URI).then()
             .statusCode(HttpStatus.OK.value())
             .extract().as(Course[].class);
@@ -88,7 +85,7 @@ public class CourseIntegrationTests {
 
     @Order(3)
     @Test
-    public void testGetCourseById() {
+    void testGetCourseById() {
         with().get(BASE_URI + "/1").then()
             .assertThat()
             .body(
@@ -101,7 +98,7 @@ public class CourseIntegrationTests {
 
     @Order(4)
     @Test
-    public void testUpdateCourse() {
+    void testUpdateCourse() {
         with().body(UPDATED_COURSE).when()
             .contentType(ContentType.JSON)
             .put(BASE_URI + "/1").then()
@@ -113,7 +110,7 @@ public class CourseIntegrationTests {
 
     @Order(5)
     @Test
-    public void testAddUserToCourse() {
+    void testAddUserToCourse() {
         with().body(TEST_USER)
             .contentType(ContentType.JSON)
             .post("api/v1/users").then()
@@ -129,7 +126,7 @@ public class CourseIntegrationTests {
 
     @Order(6)
     @Test
-    public void testGetAllCourseUsers() {
+    void testGetAllCourseUsers() {
         User[] users = get(BASE_URI + "/1/users").then()
             .statusCode(HttpStatus.OK.value())
             .extract().as(User[].class);
@@ -140,7 +137,7 @@ public class CourseIntegrationTests {
 
     @Order(7)
     @Test
-    public void testRemoveUserFromCourse() {
+    void testRemoveUserFromCourse() {
         with().body(TEST_USER)
             .contentType(ContentType.JSON)
             .delete(BASE_URI + "/1/users").then()
@@ -153,7 +150,7 @@ public class CourseIntegrationTests {
 
     @Order(8)
     @Test
-    public void testRemoveCourseById() {
+    void testRemoveCourseById() {
         TEST_COURSE.setCourseId(2L);
         with().body(TEST_COURSE)
             .contentType(ContentType.JSON)
@@ -167,7 +164,7 @@ public class CourseIntegrationTests {
 
     @Order(9)
     @Test
-    public void testRemoveAllCourses() {
+    void testRemoveAllCourses() {
         given().delete(BASE_URI).then()
             .assertThat()
             .statusCode(HttpStatus.OK.value());

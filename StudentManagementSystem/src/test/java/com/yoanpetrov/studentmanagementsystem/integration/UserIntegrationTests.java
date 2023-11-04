@@ -48,18 +48,18 @@ public class UserIntegrationTests {
     private int port;
 
     @BeforeAll
-    public static void setupLogger() {
+    static void setupLogger() {
         BasicConfigurator.configure(); // configures logger
     }
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         RestAssured.port = port;
     }
 
     @Order(1)
     @Test
-    public void testCreateUser() {
+    void testCreateUser() {
         with().body(TEST_USER)
             .when()
             .contentType(ContentType.JSON)
@@ -71,7 +71,7 @@ public class UserIntegrationTests {
 
     @Order(2)
     @Test
-    public void testGetAllUsers() {
+    void testGetAllUsers() {
         User[] users = get(BASE_URI).then()
             .statusCode(HttpStatus.OK.value())
             .extract().as(User[].class);
@@ -82,7 +82,7 @@ public class UserIntegrationTests {
 
     @Order(3)
     @Test
-    public void testGetUserById() {
+    void testGetUserById() {
         with().get(BASE_URI + "/1").then()
             .assertThat()
             .body(
@@ -94,7 +94,7 @@ public class UserIntegrationTests {
 
     @Order(4)
     @Test
-    public void testUpdateUser() {
+    void testUpdateUser() {
         with().body(UPDATED_USER).when()
             .contentType(ContentType.JSON)
             .put(BASE_URI + "/1").then()
@@ -106,7 +106,7 @@ public class UserIntegrationTests {
 
     @Order(5)
     @Test
-    public void testAddCourseToUser() {
+    void testAddCourseToUser() {
         with().body(TEST_COURSE)
             .contentType(ContentType.JSON)
             .post("api/v1/courses").then()
@@ -122,7 +122,7 @@ public class UserIntegrationTests {
 
     @Order(6)
     @Test
-    public void testGetAllUserCourses() {
+    void testGetAllUserCourses() {
         Course[] courses = get(BASE_URI + "/1/courses").then()
             .statusCode(HttpStatus.OK.value())
             .extract().as(Course[].class);
@@ -133,7 +133,7 @@ public class UserIntegrationTests {
 
     @Order(7)
     @Test
-    public void testRemoveCourseFromUser() {
+    void testRemoveCourseFromUser() {
         with().body(TEST_COURSE)
             .contentType(ContentType.JSON)
             .delete(BASE_URI + "/1/courses").then()
@@ -146,7 +146,7 @@ public class UserIntegrationTests {
 
     @Order(8)
     @Test
-    public void testRemoveUserById() {
+    void testRemoveUserById() {
         TEST_USER.setUserId(2L);
         with().body(TEST_USER)
             .contentType(ContentType.JSON)
@@ -160,7 +160,7 @@ public class UserIntegrationTests {
 
     @Order(9)
     @Test
-    public void testRemoveAllUsers() {
+    void testRemoveAllUsers() {
         given().delete(BASE_URI).then()
             .assertThat()
             .statusCode(HttpStatus.OK.value());

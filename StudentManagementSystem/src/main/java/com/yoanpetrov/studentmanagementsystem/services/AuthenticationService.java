@@ -8,8 +8,12 @@ import com.yoanpetrov.studentmanagementsystem.rest.dto.UserAccountDto;
 import com.yoanpetrov.studentmanagementsystem.security.AuthenticationResponse;
 import com.yoanpetrov.studentmanagementsystem.security.Role;
 import com.yoanpetrov.studentmanagementsystem.security.jwt.JwtService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +27,7 @@ public class AuthenticationService {
     private final UserAccountRepository accountRepository;
     private final PasswordEncoder encoder;
     private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
     /**
      * Checks whether a user account exists in the database.
@@ -47,13 +52,17 @@ public class AuthenticationService {
         UserAccount userAccount = UserAccount.builder()
             .username(username)
             .password(encoder.encode(password))
-            .role(Role.USER)
+            .role(Role.STUDENT)
             .build();
         userAccount.setUser(new User()); // create a new User for each UserAccount
         accountRepository.save(userAccount);
 
         var jwtToken = jwtService.generateToken(userAccount);
-        return new AuthenticationResponse(jwtToken);
+
+        return AuthenticationResponse.builder()
+            .accessToken(jwtToken)
+            .refreshToken("")
+            .build();
     }
 
     /**
@@ -65,11 +74,42 @@ public class AuthenticationService {
      * @throws ResourceNotFoundException if a user account with that username does not exist.
      */
     public AuthenticationResponse authenticateUser(UserAccountDto userAccountDto) {
-        var userAccount = accountRepository.findByUsername(userAccountDto.getUsername())
+        var user = accountRepository.findByUsername(userAccountDto.getUsername())
             .orElseThrow(() -> new ResourceNotFoundException("The user account does not exist"));
-        if (!encoder.matches(userAccountDto.getPassword(), userAccount.getPassword())) {
-            throw new BadCredentialsException("Wrong password");
-        }
-        return new AuthenticationResponse(jwtService.generateToken(userAccount));
+
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                userAccountDto.getUsername(),
+                userAccountDto.getPassword()));
+
+        var jwtToken = jwtService.generateToken(user);
+
+        return AuthenticationResponse.builder()
+            .accessToken(jwtToken)
+            .refreshToken("")
+            .build();
+    }
+
+    public AuthenticationResponse refreshToken(HttpServletRequest request) {
+       final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+       final String oldJwtToken;
+       final String username;
+
+       if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+           return new AuthenticationResponse("", "");
+       }
+       oldJwtToken = authHeader.substring(7);
+       username = jwtService.extractUsername(oldJwtToken);
+       if (username != null) {
+           var user = accountRepository.findByUsername(username)
+               .orElseThrow(() -> new ResourceNotFoundException("User account not found"));
+           if (jwtService.validateToken(oldJwtToken, user)) {
+               var refreshToken = jwtService.generateRefreshToken(user);
+               return AuthenticationResponse.builder()
+                   .accessToken("")
+                   .refreshToken(refreshToken).build();
+           }
+       }
+       return new AuthenticationResponse("", "");
     }
 }

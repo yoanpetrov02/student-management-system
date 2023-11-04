@@ -36,13 +36,13 @@ public class JwtService {
     private long refreshExpiration;
 
     /**
-     * Validates a JWT token.
+     * Validates whether a JWT token represents the correct user.
      *
      * @param token       the token.
      * @param userDetails the user to validate the token against.
      * @return true if the token is not expired and represents the same user, false otherwise.
      */
-    public boolean isTokenValid(String token, UserDetails userDetails) {
+    public boolean validateToken(String token, UserDetails userDetails) {
         LOG.debug("Validating token {} against user {}", token, userDetails.getUsername());
         final String username = extractUsername(token);
         return username.equals(userDetails.getUsername())
