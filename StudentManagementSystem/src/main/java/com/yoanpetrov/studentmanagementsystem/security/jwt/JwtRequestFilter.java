@@ -55,7 +55,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         try {
             LOG.debug("Filtering request");
-            if (request.getServletPath().matches("api/v1/(login|register)")) {
+            if (request.getServletPath().matches("/api/v1/(login|register)")) {
                 LOG.debug("Request to whitelisted endpoints, skipping the filtering");
                 return;
             }
