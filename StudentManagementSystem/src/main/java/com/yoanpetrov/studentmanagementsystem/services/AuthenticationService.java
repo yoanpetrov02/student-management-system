@@ -10,6 +10,7 @@ import com.yoanpetrov.studentmanagementsystem.security.Role;
 import com.yoanpetrov.studentmanagementsystem.security.jwt.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,7 +23,7 @@ import org.springframework.stereotype.Service;
  */
 @RequiredArgsConstructor
 @Service
-public class AuthenticationService {
+public class AuthenticationService implements CommandLineRunner {
 
     private final UserAccountRepository accountRepository;
     private final PasswordEncoder encoder;
@@ -111,5 +112,14 @@ public class AuthenticationService {
            }
        }
        return new AuthenticationResponse("", "");
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        UserAccount adminAccount = UserAccount.builder()
+            .username("admin")
+            .password(encoder.encode("admin"))
+            .role(Role.ADMIN).build();
+        accountRepository.save(adminAccount);
     }
 }
