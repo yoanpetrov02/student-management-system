@@ -1,7 +1,6 @@
 package com.yoanpetrov.studentmanagementsystem.rest.controllers;
 
 import com.yoanpetrov.studentmanagementsystem.exceptions.ResourceConflictException;
-import com.yoanpetrov.studentmanagementsystem.mappers.CourseMapper;
 import com.yoanpetrov.studentmanagementsystem.rest.dto.UserAccountDto;
 import com.yoanpetrov.studentmanagementsystem.security.AuthenticationResponse;
 import com.yoanpetrov.studentmanagementsystem.services.AuthenticationService;
@@ -20,8 +19,6 @@ public class AuthenticationController {
     private static final Logger LOG = LoggerFactory.getLogger(AuthenticationController.class);
 
     private final AuthenticationService authenticationService;
-
-    private final CourseMapper courseMapper;
 
     /**
      * Registers the given user.
@@ -61,11 +58,5 @@ public class AuthenticationController {
     @PostMapping("/refresh-token")
     public ResponseEntity<?> refreshToken(HttpServletRequest request) {
         return ResponseEntity.ok(authenticationService.refreshToken(request));
-    }
-
-    @PostMapping("/login/test")
-    public String test() {
-        CourseCreationDto dto = CourseCreationDto.builder().name("asd").description("asd").maxCapacity(10).build();
-        return courseMapper.convertCreationDtoToEntity(dto).toString();
     }
 }

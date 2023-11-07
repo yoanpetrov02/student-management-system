@@ -14,11 +14,11 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class CourseDto {
-    @NotBlank
+    @NotBlank(message = "Name cannot be blank")
     private String name;
-    @NotNull
+    @NotNull(message = "Description cannot be null")
     private String description;
-    @Min(10)
-    @Max(120)
+    @Min(value = 10, message = "Max capacity cannot be below 10")
+    @Max(value = 120, message = "Max capacity cannot be above 120")
     private int maxCapacity;
 }
