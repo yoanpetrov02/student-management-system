@@ -2,7 +2,6 @@ package com.yoanpetrov.studentmanagementsystem.rest.controllers;
 
 import com.yoanpetrov.studentmanagementsystem.entities.User;
 import com.yoanpetrov.studentmanagementsystem.entities.UserAccount;
-import com.yoanpetrov.studentmanagementsystem.exceptions.ResourceNotFoundException;
 import com.yoanpetrov.studentmanagementsystem.services.UserAccountService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
