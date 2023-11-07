@@ -124,7 +124,8 @@ public class UserController {
         @Valid @RequestBody UserDto userDetailsDto
     ) {
         LOG.debug("Updating user with id {}", id);
-        User user = userService.updateUser(id, userMapper.convertDtoToEntity(userDetailsDto));
+        User user = userService.updateUser(
+            id, userMapper.convertDtoToEntity(userDetailsDto));
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
