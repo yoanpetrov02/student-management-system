@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -63,6 +64,7 @@ public class SecurityConfiguration {
                     .requestMatchers(HttpMethod.POST, "/api/v1/courses").hasAnyRole(ADMIN.name())
                     .requestMatchers(HttpMethod.DELETE, "/api/v1/courses").hasAnyRole(ADMIN.name())
                     .requestMatchers(HttpMethod.DELETE, "/api/v1/courses/{id}").hasAnyRole(ADMIN.name())
+                    .requestMatchers("/api/v1/accounts").hasAnyRole(ADMIN.name())
                     .anyRequest().authenticated())
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(c ->
