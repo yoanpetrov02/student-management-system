@@ -2,7 +2,10 @@ package com.yoanpetrov.studentmanagementsystem.rest.controllers;
 
 import com.yoanpetrov.studentmanagementsystem.entities.User;
 import com.yoanpetrov.studentmanagementsystem.entities.UserAccount;
+import com.yoanpetrov.studentmanagementsystem.mappers.UserAccountMapper;
+import com.yoanpetrov.studentmanagementsystem.rest.dto.UserAccountDto;
 import com.yoanpetrov.studentmanagementsystem.services.UserAccountService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +24,7 @@ public class AccountController {
     private static final Logger LOG = LoggerFactory.getLogger(AccountController.class);
 
     private final UserAccountService userAccountService;
+    private final UserAccountMapper userAccountMapper;
 
     /**
      * Gets all user accounts.
@@ -56,13 +60,15 @@ public class AccountController {
     /**
      * Creates the given {@code UserAccount}.
      *
-     * @param userAccount the account to be created.
+     * @param userAccountDto the account to be created.
      * @return 200 and the created account if it was successfully created.
      */
     @PostMapping
-    public ResponseEntity<UserAccount> createUserAccount(@RequestBody UserAccount userAccount) {
+    public ResponseEntity<UserAccount> createUserAccount(@Valid @RequestBody UserAccountDto userAccountDto) {
         LOG.debug("Creating new user account");
-        UserAccount createdAccount = userAccountService.createUserAccount(userAccount);
+        UserAccount createdAccount = userAccountService.createUserAccount(
+            userAccountMapper.convertDtoToEntity(userAccountDto)
+        );
         return new ResponseEntity<>(createdAccount, HttpStatus.CREATED);
     }
 
@@ -88,17 +94,18 @@ public class AccountController {
      * Updates the user account with the given id with the new account details.
      *
      * @param id            the id of the existing account.
-     * @param userAccountDetails the new details of the account.
+     * @param userAccountDetailsDto the new details of the account.
      * @return 200 and the changed account if the action was successful,
      * 404 if the account was not found.
      */
     @PutMapping("/{id}")
     public ResponseEntity<UserAccount> updateUserAccount(
         @PathVariable Long id,
-        @RequestBody UserAccount userAccountDetails
+        @RequestBody UserAccountDto userAccountDetailsDto
     ) {
         LOG.debug("Updating user account with id {}", id);
-        UserAccount userAccount = userAccountService.updateUserAccount(id, userAccountDetails);
+        UserAccount userAccount = userAccountService.updateUserAccount(
+            id, userAccountMapper.convertDtoToEntity(userAccountDetailsDto));
         return new ResponseEntity<>(userAccount, HttpStatus.OK);
     }
 

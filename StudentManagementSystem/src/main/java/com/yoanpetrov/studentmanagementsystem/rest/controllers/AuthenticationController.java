@@ -5,6 +5,7 @@ import com.yoanpetrov.studentmanagementsystem.rest.dto.UserAccountDto;
 import com.yoanpetrov.studentmanagementsystem.security.AuthenticationResponse;
 import com.yoanpetrov.studentmanagementsystem.services.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class AuthenticationController {
      * 409 if a user account with this username already exists.
      */
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> registerUser(@RequestBody UserAccountDto userDto) {
+    public ResponseEntity<AuthenticationResponse> registerUser(@Valid @RequestBody UserAccountDto userDto) {
         LOG.debug("Attempting to register user account");
         if (authenticationService.checkUserExistence(userDto.getUsername())) {
             LOG.debug("Account with the same username already exists, returning 409");
@@ -48,7 +49,7 @@ public class AuthenticationController {
      * 401 if the credentials weren't correct.
      */
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody UserAccountDto userDto) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody UserAccountDto userDto) {
         LOG.debug("Attempting to authenticate user account: {}", userDto.getUsername());
         AuthenticationResponse response = authenticationService.authenticateUser(userDto);
         LOG.debug("Successful authentication, generated token is {}", response.getAccessToken());
