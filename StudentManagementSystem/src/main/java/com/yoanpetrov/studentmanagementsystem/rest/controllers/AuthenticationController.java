@@ -2,10 +2,7 @@ package com.yoanpetrov.studentmanagementsystem.rest.controllers;
 
 import com.yoanpetrov.studentmanagementsystem.exceptions.ResourceConflictException;
 import com.yoanpetrov.studentmanagementsystem.mappers.CourseMapper;
-import com.yoanpetrov.studentmanagementsystem.mappers.UserMapper;
-import com.yoanpetrov.studentmanagementsystem.rest.dto.CourseCreationDto;
 import com.yoanpetrov.studentmanagementsystem.rest.dto.UserAccountDto;
-import com.yoanpetrov.studentmanagementsystem.rest.dto.UserDto;
 import com.yoanpetrov.studentmanagementsystem.security.AuthenticationResponse;
 import com.yoanpetrov.studentmanagementsystem.services.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;

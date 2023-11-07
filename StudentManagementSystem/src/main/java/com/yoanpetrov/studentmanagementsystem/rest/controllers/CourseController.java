@@ -3,7 +3,6 @@ package com.yoanpetrov.studentmanagementsystem.rest.controllers;
 import com.yoanpetrov.studentmanagementsystem.entities.Course;
 import com.yoanpetrov.studentmanagementsystem.entities.User;
 import com.yoanpetrov.studentmanagementsystem.mappers.CourseMapper;
-import com.yoanpetrov.studentmanagementsystem.rest.dto.CourseCreationDto;
 import com.yoanpetrov.studentmanagementsystem.rest.dto.CourseDto;
 import com.yoanpetrov.studentmanagementsystem.services.CourseService;
 import lombok.RequiredArgsConstructor;
@@ -81,14 +80,14 @@ public class CourseController {
     /**
      * Creates the given {@code Course}.
      *
-     * @param courseCreationDto the course to be created.
+     * @param courseDto the course to be created.
      * @return 200 and the created course if it was successfully created.
      */
     @PostMapping
-    public ResponseEntity<Course> createCourse(@RequestBody CourseCreationDto courseCreationDto) {
+    public ResponseEntity<Course> createCourse(@RequestBody CourseDto courseDto) {
         LOG.debug("Creating new course");
         Course createdCourse = courseService.createCourse(
-            courseMapper.convertCreationDtoToEntity(courseCreationDto));
+            courseMapper.convertDtoToEntity(courseDto));
         return new ResponseEntity<>(createdCourse, HttpStatus.CREATED);
     }
 
