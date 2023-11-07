@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -31,8 +30,8 @@ import static com.yoanpetrov.studentmanagementsystem.security.Role.*;
 public class SecurityConfiguration {
 
     private static final String[] WHITELISTED_ENDPOINTS = {
-        "/api/v1/register",
-        "/api/v1/login"
+        "/api/v1/register/**",
+        "/api/v1/login/**"
     };
 
     private final JwtRequestFilter jwtRequestFilter;

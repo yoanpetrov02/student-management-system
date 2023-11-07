@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 // TODO: 04-Nov-23 Change POST and DELETE requests to /users/{id}/courses and /courses/{id}/users to use a path variable and work like /users/{userId}/courses/{courseId} and /courses/{courseId}/users/{userId} respectively. This way, you don't have to pass the whole user or course in JSON but rather just its id and if it's not found in the database, 404 will be returned, which is a cleaner solution.
 // TODO: 04-Nov-23 Change update handlers to user mappers instead of manually setting fields.
 // TODO: 04-Nov-23 Write integration tests for AccountController.
-// TODO: 07-Nov-23 Make accounts endpoints require a role.
 
 /**
  * Main starting point of the application.

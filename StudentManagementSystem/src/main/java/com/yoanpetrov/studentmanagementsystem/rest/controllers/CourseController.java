@@ -2,6 +2,8 @@ package com.yoanpetrov.studentmanagementsystem.rest.controllers;
 
 import com.yoanpetrov.studentmanagementsystem.entities.Course;
 import com.yoanpetrov.studentmanagementsystem.entities.User;
+import com.yoanpetrov.studentmanagementsystem.mappers.CourseMapper;
+import com.yoanpetrov.studentmanagementsystem.rest.dto.CourseDto;
 import com.yoanpetrov.studentmanagementsystem.services.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -23,6 +25,7 @@ public class CourseController {
     private static final Logger LOG = LoggerFactory.getLogger(CourseController.class);
 
     private final CourseService courseService;
+    private final CourseMapper courseMapper;
 
     /**
      * Gets all courses.
@@ -77,13 +80,14 @@ public class CourseController {
     /**
      * Creates the given {@code Course}.
      *
-     * @param course the course to be created.
+     * @param courseDto the course to be created.
      * @return 200 and the created course if it was successfully created.
      */
     @PostMapping
-    public ResponseEntity<Course> createCourse(@RequestBody Course course) {
+    public ResponseEntity<Course> createCourse(@RequestBody CourseDto courseDto) {
         LOG.debug("Creating new course");
-        Course createdCourse = courseService.createCourse(course);
+        Course createdCourse = courseService.createCourse(
+            courseMapper.convertDtoToEntity(courseDto));
         return new ResponseEntity<>(createdCourse, HttpStatus.CREATED);
     }
 
@@ -109,17 +113,18 @@ public class CourseController {
      * Updates the course with the given id with the new course details.
      *
      * @param id            the id of the existing course.
-     * @param courseDetails the new details of the course.
+     * @param courseDetailsDto the new details of the course.
      * @return 200 and the changed course if the action was successful,
      * 404 if the course was not found.
      */
     @PutMapping("/{id}")
     public ResponseEntity<Course> updateCourse(
         @PathVariable Long id,
-        @RequestBody Course courseDetails
+        @RequestBody CourseDto courseDetailsDto
     ) {
         LOG.debug("Updating course with id {}", id);
-        Course course = courseService.updateCourse(id, courseDetails);
+        Course course = courseService.updateCourse(id,
+            courseMapper.convertDtoToEntity(courseDetailsDto));
         return new ResponseEntity<>(course, HttpStatus.OK);
     }
 
