@@ -1,6 +1,5 @@
 package com.yoanpetrov.studentmanagementsystem.rest.controllers;
 
-import com.yoanpetrov.studentmanagementsystem.exceptions.ResourceNotFoundException;
 import com.yoanpetrov.studentmanagementsystem.entities.Course;
 import com.yoanpetrov.studentmanagementsystem.entities.User;
 import com.yoanpetrov.studentmanagementsystem.services.UserService;
@@ -32,12 +31,12 @@ public class UserController {
      * 200 and the user list if there is at least 1 user.
      */
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<?> getAllUsers() {
         LOG.debug("Getting all users");
         List<User> users = userService.getAllUsers();
         if (users.isEmpty()) {
             LOG.debug("No existing users, returning 204");
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>("No existing users", HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
@@ -46,19 +45,14 @@ public class UserController {
      * Gets a user by its id.
      *
      * @param id the id of the user.
-     * @return 404 if the user was not found,
-     * 200 and the user if it was found.
+     * @return 200 and the user if it was found,
+     * 404 if the user was not found.
      */
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         LOG.debug("Getting user with id {}", id);
-        try {
-            User user = userService.getUserById(id);
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        } catch (ResourceNotFoundException e) {
-            LOG.debug("The user was not found, returning 404");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        User user = userService.getUserById(id);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     /**
@@ -70,19 +64,14 @@ public class UserController {
      * 404 if the user was not found.
      */
     @GetMapping("/{id}/courses")
-    public ResponseEntity<List<Course>> getAllUserCourses(@PathVariable Long id) {
+    public ResponseEntity<?> getAllUserCourses(@PathVariable Long id) {
         LOG.debug("Getting all courses of user with id {}", id);
-        try {
-            List<Course> courses = userService.getAllUserCourses(id);
-            if (courses.isEmpty()) {
-                LOG.debug("No existing courses in user, returning 204");
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(courses, HttpStatus.OK);
-        } catch (ResourceNotFoundException e) {
-            LOG.debug("The user was not found, returning 404");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        List<Course> courses = userService.getAllUserCourses(id);
+        if (courses.isEmpty()) {
+            LOG.debug("No existing courses in user, returning 204");
+            return new ResponseEntity<>("No existing courses", HttpStatus.NO_CONTENT);
         }
+        return new ResponseEntity<>(courses, HttpStatus.OK);
     }
 
     /**
@@ -112,13 +101,8 @@ public class UserController {
         @RequestBody Course requestCourse
     ) {
         LOG.debug("Adding course to user with id {}", userId);
-        try {
-            Course course = userService.addCourseToUser(userId, requestCourse);
-            return new ResponseEntity<>(course, HttpStatus.CREATED);
-        } catch (ResourceNotFoundException e) {
-            LOG.debug("The course or the user were not found, returning 404");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        Course course = userService.addCourseToUser(userId, requestCourse);
+        return new ResponseEntity<>(course, HttpStatus.CREATED);
     }
 
     /**
@@ -135,13 +119,8 @@ public class UserController {
         @RequestBody User userDetails
     ) {
         LOG.debug("Updating user with id {}", id);
-        try {
-            User user = userService.updateUser(id, userDetails);
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        } catch (ResourceNotFoundException e) {
-            LOG.debug("The user was not found, returning 404");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        User user = userService.updateUser(id, userDetails);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     /**
@@ -157,7 +136,7 @@ public class UserController {
     }
 
     /**
-     * Deletes a user by its user id.
+     * Deletes a user by its id.
      *
      * @param id the id of the user to be deleted.
      * @return 200 and a message if the deletion was successful,
@@ -166,13 +145,8 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         LOG.debug("Deleting user with id {}", id);
-        try {
-            userService.deleteUser(id);
-            return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
-        } catch (ResourceNotFoundException e) {
-            LOG.debug("The user was not found, returning 404");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        userService.deleteUser(id);
+        return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
     }
 
     /**
@@ -189,12 +163,7 @@ public class UserController {
         @RequestBody Course requestCourse
     ) {
         LOG.debug("Removing course from user with id {}", userId);
-        try {
-            Course course = userService.removeCourseFromUser(userId, requestCourse);
-            return new ResponseEntity<>(course, HttpStatus.OK);
-        } catch (ResourceNotFoundException e) {
-            LOG.debug("The course or the user were not found, returning 404");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        Course course = userService.removeCourseFromUser(userId, requestCourse);
+        return new ResponseEntity<>(course, HttpStatus.OK);
     }
 }

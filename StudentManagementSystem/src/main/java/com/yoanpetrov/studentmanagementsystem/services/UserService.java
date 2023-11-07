@@ -20,15 +20,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
 
-    /**
-     * Checks whether a user exists in the database.
-     *
-     * @param userId the id of the user.
-     * @return true if the user exists, false otherwise.
-     */
-    public boolean existsUser(Long userId) {
-        return userRepository.existsById(userId);
-    }
+
 
     /**
      * Gets all existing users in the database.
@@ -147,5 +139,15 @@ public class UserService {
         course.removeUser(user);
         userRepository.save(user);
         return course;
+    }
+
+    /**
+     * Checks whether a user exists in the database.
+     *
+     * @param userId the id of the user.
+     * @return true if the user exists, false otherwise.
+     */
+    private boolean existsUser(Long userId) {
+        return userRepository.existsById(userId);
     }
 }

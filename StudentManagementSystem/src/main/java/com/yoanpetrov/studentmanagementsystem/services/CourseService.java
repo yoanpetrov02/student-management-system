@@ -21,16 +21,6 @@ public class CourseService {
     private final UserRepository userRepository;
 
     /**
-     * Checks whether a course exists in the database.
-     *
-     * @param courseId the id of the course.
-     * @return true if the course exists, false otherwise.
-     */
-    public boolean existsCourse(Long courseId) {
-        return courseRepository.existsById(courseId);
-    }
-
-    /**
      * Gets all existing courses in the database.
      *
      * @return a list of the courses, empty if no courses exist.
@@ -148,5 +138,15 @@ public class CourseService {
         course.removeUser(user);
         courseRepository.save(course);
         return user;
+    }
+
+    /**
+     * Checks whether a course exists in the database.
+     *
+     * @param courseId the id of the course.
+     * @return true if the course exists, false otherwise.
+     */
+    private boolean existsCourse(Long courseId) {
+        return courseRepository.existsById(courseId);
     }
 }

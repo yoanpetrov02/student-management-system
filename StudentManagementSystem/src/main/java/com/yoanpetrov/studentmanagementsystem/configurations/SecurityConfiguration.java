@@ -1,11 +1,12 @@
 package com.yoanpetrov.studentmanagementsystem.configurations;
 
 import com.yoanpetrov.studentmanagementsystem.security.jwt.JwtRequestFilter;
-import com.yoanpetrov.studentmanagementsystem.services.UserAccountDetailsService;
+import com.yoanpetrov.studentmanagementsystem.services.UserAccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -35,7 +36,7 @@ public class SecurityConfiguration {
     };
 
     private final JwtRequestFilter jwtRequestFilter;
-    private final UserAccountDetailsService userAccountDetailsService;
+    private final UserAccountService userAccountService;
 
     /**
      * Builds the {@code SecurityFilterChain} bean.
@@ -63,6 +64,7 @@ public class SecurityConfiguration {
                     .requestMatchers(HttpMethod.POST, "/api/v1/courses").hasAnyRole(ADMIN.name())
                     .requestMatchers(HttpMethod.DELETE, "/api/v1/courses").hasAnyRole(ADMIN.name())
                     .requestMatchers(HttpMethod.DELETE, "/api/v1/courses/{id}").hasAnyRole(ADMIN.name())
+                    .requestMatchers("/api/v1/accounts").hasAnyRole(ADMIN.name())
                     .anyRequest().authenticated())
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(c ->
@@ -83,7 +85,7 @@ public class SecurityConfiguration {
     public AuthenticationProvider authenticationProvider() {
         var authProvider = new DaoAuthenticationProvider();
         authProvider.setPasswordEncoder(passwordEncoder());
-        authProvider.setUserDetailsService(userAccountDetailsService);
+        authProvider.setUserDetailsService(userAccountService);
         return authProvider;
     }
 
