@@ -30,12 +30,12 @@ public class AccountController {
      * 200 and the account list if there is at least 1 account.
      */
     @GetMapping
-    public ResponseEntity<List<UserAccount>> getAllAccounts() {
+    public ResponseEntity<?> getAllAccounts() {
         LOG.debug("Getting all user accounts");
         List<UserAccount> accounts = new ArrayList<>(userAccountService.getAllUserAccounts());
         if (accounts.isEmpty()) {
             LOG.debug("No existing user accounts, returning 204");
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>("No existing user accounts", HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(accounts, HttpStatus.OK);
     }
@@ -50,13 +50,8 @@ public class AccountController {
     @GetMapping("/{id}")
     public ResponseEntity<UserAccount> getAccountById(@PathVariable Long id) {
         LOG.debug("Getting account with id {}", id);
-        try {
-            UserAccount account = userAccountService.getUserAccountById(id);
-            return new ResponseEntity<>(account, HttpStatus.OK);
-        } catch (ResourceNotFoundException e) {
-            LOG.debug("The account was not found, returning 404");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        UserAccount account = userAccountService.getUserAccountById(id);
+        return new ResponseEntity<>(account, HttpStatus.OK);
     }
 
     /**
@@ -86,13 +81,8 @@ public class AccountController {
         @RequestBody User requestUser
     ) {
         LOG.debug("Setting the user of account with id {}", userAccountId);
-        try {
-            User user = userAccountService.setAccountUser(userAccountId, requestUser);
-            return new ResponseEntity<>(user, HttpStatus.CREATED);
-        } catch (ResourceNotFoundException e) {
-            LOG.debug("The account or the user were not found, returning 404");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        User user = userAccountService.setAccountUser(userAccountId, requestUser);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     /**
@@ -109,13 +99,8 @@ public class AccountController {
         @RequestBody UserAccount userAccountDetails
     ) {
         LOG.debug("Updating user account with id {}", id);
-        try {
-            UserAccount userAccount = userAccountService.updateUserAccount(id, userAccountDetails);
-            return new ResponseEntity<>(userAccount, HttpStatus.OK);
-        } catch (ResourceNotFoundException e) {
-            LOG.debug("The user account was not found, returning 404");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        UserAccount userAccount = userAccountService.updateUserAccount(id, userAccountDetails);
+        return new ResponseEntity<>(userAccount, HttpStatus.OK);
     }
 
     /**
@@ -140,12 +125,7 @@ public class AccountController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUserAccount(@PathVariable Long id) {
         LOG.debug("Deleting user account with id {}", id);
-        try {
-            userAccountService.deleteUserAccount(id);
-            return new ResponseEntity<>("User account deleted successfully", HttpStatus.OK);
-        } catch (ResourceNotFoundException e) {
-            LOG.debug("The user account was not found, returning 404");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        userAccountService.deleteUserAccount(id);
+        return new ResponseEntity<>("User account deleted successfully", HttpStatus.OK);
     }
 }

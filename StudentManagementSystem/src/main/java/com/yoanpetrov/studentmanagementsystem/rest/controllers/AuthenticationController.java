@@ -54,7 +54,6 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody UserAccountDto userDto) {
         LOG.debug("Attempting to authenticate user account: {}", userDto.getUsername());
-
         AuthenticationResponse response = authenticationService.authenticateUser(userDto);
         LOG.debug("Successful authentication, generated token is {}", response.getAccessToken());
         return ResponseEntity.ok(response);
