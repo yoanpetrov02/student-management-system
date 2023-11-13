@@ -95,25 +95,25 @@ public class UserController {
     /**
      * Adds a course to a user.
      *
-     * @param userId        the id of the user.
-     * @param requestCourse the {@code Course} to be added to the user.
+     * @param userId   the id of the user.
+     * @param courseId the id of the {@code Course} to be added to the user.
      * @return 201 with the course if the action was successful,
      * 404 if the user or the course weren't found.
      */
-    @PostMapping("/{userId}/courses")
+    @PostMapping("/{userId}/courses/{courseId}")
     public ResponseEntity<Course> addCourseToUser(
         @PathVariable Long userId,
-        @RequestBody Course requestCourse
+        @PathVariable Long courseId
     ) {
         LOG.debug("Adding course to user with id {}", userId);
-        Course course = userService.addCourseToUser(userId, requestCourse);
-        return new ResponseEntity<>(course, HttpStatus.CREATED);
+        Course course = userService.addCourseToUser(userId, courseId);
+        return new ResponseEntity<>(course, HttpStatus.OK);
     }
 
     /**
      * Updates the user with the given id with the new user details.
      *
-     * @param id          the id of the existing user.
+     * @param id             the id of the existing user.
      * @param userDetailsDto the new details of the user.
      * @return 200 and the changed user if the action was successful,
      * 404 if the user was not found.
@@ -158,18 +158,18 @@ public class UserController {
     /**
      * Removes a course from a user.
      *
-     * @param userId        the id of the user.
-     * @param requestCourse the {@code Course} to be removed from the user.
+     * @param userId   the id of the user.
+     * @param courseId the id of the {@code Course} to be removed from the user.
      * @return 201 with the course if the action was successful,
      * 404 if the user or the course weren't found.
      */
-    @DeleteMapping("/{userId}/courses")
+    @DeleteMapping("/{userId}/courses/{courseId}")
     public ResponseEntity<Course> removeCourseFromUser(
         @PathVariable Long userId,
-        @RequestBody Course requestCourse
+        @PathVariable Long courseId
     ) {
         LOG.debug("Removing course from user with id {}", userId);
-        Course course = userService.removeCourseFromUser(userId, requestCourse);
+        Course course = userService.removeCourseFromUser(userId, courseId);
         return new ResponseEntity<>(course, HttpStatus.OK);
     }
 }

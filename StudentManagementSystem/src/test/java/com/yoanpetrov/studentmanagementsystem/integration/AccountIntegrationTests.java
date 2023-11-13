@@ -1,7 +1,7 @@
 package com.yoanpetrov.studentmanagementsystem.integration;
 
-import com.yoanpetrov.studentmanagementsystem.entities.Course;
 import com.yoanpetrov.studentmanagementsystem.entities.User;
+import com.yoanpetrov.studentmanagementsystem.entities.UserAccount;
 import com.yoanpetrov.studentmanagementsystem.integration.config.TestConfig;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -12,9 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.Arrays;
 
 import static io.restassured.RestAssured.*;
 import static io.restassured.RestAssured.given;
@@ -26,16 +25,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CourseIntegrationTests {
+public class AccountIntegrationTests {
 
-    private static final String BASE_URI = "api/v1/courses";
+    private static final String BASE_URI = "api/v1/accounts";
 
     @Autowired
-    private Course testCourse;
+    private UserAccount testUserAccount;
     @Autowired
-    private Course updatedCourse;
+    private UserAccount updatedUserAccount;
+    @Autowired
+    private UserAccount userAccountToDelete;
     @Autowired
     private User testUser;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @LocalServerPort
     private int port;
@@ -52,8 +55,8 @@ public class CourseIntegrationTests {
 
     @Order(1)
     @Test
-    void testCreateCourse() {
-        with().body(testCourse)
+    void testCreateAccount() {
+        with().body(testUserAccount)
             .when()
             .contentType(ContentType.JSON)
             .post(BASE_URI)
@@ -64,95 +67,80 @@ public class CourseIntegrationTests {
 
     @Order(2)
     @Test
-    void testGetAllCourses() {
-        Course[] courses = get(BASE_URI).then()
+    void testGetAllAccounts() {
+        UserAccount[] accounts = get(BASE_URI).then()
             .statusCode(HttpStatus.OK.value())
-            .extract().as(Course[].class);
+            .extract()
+            .as(UserAccount[].class);
 
-        assertThat(courses.length, equalTo(1));
-        assertTrue(Arrays.stream(courses).toList().contains(testCourse));
+        assertThat(accounts.length, equalTo(2));
+
+        UserAccount account = accounts[1];
+        assertThat(account.getAccountId(), equalTo(2L));
+        assertThat(account.getUsername(), equalTo("test"));
+        assertTrue(passwordEncoder.matches("test", account.getPassword()));
+        assertThat(account.getRole().name(), equalTo("STUDENT"));
     }
 
     @Order(3)
     @Test
-    void testGetCourseById() {
-        with().get(BASE_URI + "/1").then()
-            .assertThat()
-            .body(
-                "courseId", equalTo(1),
-                "name", equalTo("Test"),
-                "description", equalTo("Test description"),
-                "maxCapacity", equalTo(10),
-                "numberOfStudents", equalTo(0));
+    void testGetAccountById() {
+        UserAccount account = get(BASE_URI + "/2").then()
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .as(UserAccount.class);
+
+        assertThat(account.getAccountId(), equalTo(2L));
+        assertThat(account.getUsername(), equalTo("test"));
+        assertTrue(passwordEncoder.matches("test", account.getPassword()));
+        assertThat(account.getRole().name(), equalTo("STUDENT"));
     }
 
     @Order(4)
     @Test
-    void testUpdateCourse() {
-        with().body(updatedCourse).when()
+    void testUpdateAccount() {
+        UserAccount updated = with().body(updatedUserAccount).when()
             .contentType(ContentType.JSON)
-            .put(BASE_URI + "/1").then()
-            .assertThat()
+            .put(BASE_URI + "/2")
+            .then()
             .statusCode(HttpStatus.OK.value())
-            .and()
-            .body("description", equalTo("Updated test description"));
+            .extract()
+            .as(UserAccount.class);
+
+        assertTrue(passwordEncoder.matches("updated", updated.getPassword()));
     }
 
     @Order(5)
     @Test
-    void testAddUserToCourse() {
+    void testSetAccountUser() {
         with().body(testUser)
             .contentType(ContentType.JSON)
             .post("api/v1/users").then()
             .assertThat()
             .statusCode(HttpStatus.CREATED.value());
         with().contentType(ContentType.JSON)
-            .post(BASE_URI + "/1/users/1").then()
+            .post(BASE_URI + "/2/user/1").then()
             .assertThat()
             .statusCode(HttpStatus.OK.value());
-        testCourse.setNumberOfStudents(testCourse.getNumberOfStudents() + 1);
     }
 
     @Order(6)
     @Test
-    void testGetAllCourseUsers() {
-        User[] users = get(BASE_URI + "/1/users").then()
-            .statusCode(HttpStatus.OK.value())
-            .extract().as(User[].class);
-
-        assertThat(users.length, equalTo(1));
-        assertTrue(Arrays.stream(users).toList().contains(testUser));
-    }
-
-    @Order(7)
-    @Test
-    void testRemoveUserFromCourse() {
-        with().contentType(ContentType.JSON)
-            .delete(BASE_URI + "/1/users/1").then()
-            .assertThat()
-            .statusCode(HttpStatus.OK.value());
-        given().get(BASE_URI + "/1/users").then()
-            .assertThat()
-            .statusCode(HttpStatus.NO_CONTENT.value());
-    }
-
-    @Order(8)
-    @Test
-    void testRemoveCourseById() {
-        testCourse.setCourseId(2L);
-        with().body(testCourse)
+    void testDeleteAccountById() {
+        testUserAccount.setAccountId(3L);
+        with().body(userAccountToDelete)
             .contentType(ContentType.JSON)
             .post(BASE_URI).then()
             .assertThat()
             .statusCode(HttpStatus.CREATED.value());
-        given().delete(BASE_URI + "/2").then()
+        given().delete(BASE_URI + "/3").then()
             .assertThat()
             .statusCode(HttpStatus.OK.value());
     }
 
-    @Order(9)
+    @Order(7)
     @Test
-    void testRemoveAllCourses() {
+    void testDeleteAllAccounts() {
         given().delete(BASE_URI).then()
             .assertThat()
             .statusCode(HttpStatus.OK.value());

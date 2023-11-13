@@ -68,15 +68,15 @@ public class CourseService {
     /**
      * Adds the given user to the course with the given id.
      *
-     * @param courseId  the id of the course.
-     * @param userToAdd the user to be added to the course.
+     * @param courseId the id of the course.
+     * @param userId   the id of the user to be added to the course.
      * @return the added {@code User} if the action was successful.
      * @throws ResourceNotFoundException if the user or course were not found.
      */
-    public User addUserToCourse(Long courseId, User userToAdd) {
+    public User addUserToCourse(Long courseId, Long userId) {
         Course course = courseRepository.findById(courseId)
             .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
-        User user = userRepository.findById(userToAdd.getUserId())
+        User user = userRepository.findById(userId)
             .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         course.addUser(user);
         courseRepository.save(course);
@@ -125,15 +125,15 @@ public class CourseService {
     /**
      * Removes the given user from the course with the given id.
      *
-     * @param courseId     the id of the course.
-     * @param userToRemove the user to be removed from the course.
+     * @param courseId the id of the course.
+     * @param userId   the id of the user to be removed from the course.
      * @return the removed {@code User} if the action was successful.
      * @throws ResourceNotFoundException if the user or course were not found.
      */
-    public User removeUserFromCourse(Long courseId, User userToRemove) {
+    public User removeUserFromCourse(Long courseId, Long userId) {
         Course course = courseRepository.findById(courseId)
             .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
-        User user = userRepository.findById(userToRemove.getUserId())
+        User user = userRepository.findById(userId)
             .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         course.removeUser(user);
         courseRepository.save(course);

@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -35,7 +34,7 @@ public class AccountController {
     @GetMapping
     public ResponseEntity<?> getAllAccounts() {
         LOG.debug("Getting all user accounts");
-        List<UserAccount> accounts = new ArrayList<>(userAccountService.getAllUserAccounts());
+        List<UserAccount> accounts = userAccountService.getAllUserAccounts();
         if (accounts.isEmpty()) {
             LOG.debug("No existing user accounts, returning 204");
             return new ResponseEntity<>("No existing user accounts", HttpStatus.NO_CONTENT);
@@ -60,40 +59,38 @@ public class AccountController {
     /**
      * Creates the given {@code UserAccount}.
      *
-     * @param userAccountDto the account to be created.
+     * @param userAccount the account to be created.
      * @return 200 and the created account if it was successfully created.
      */
     @PostMapping
-    public ResponseEntity<UserAccount> createUserAccount(@Valid @RequestBody UserAccountDto userAccountDto) {
+    public ResponseEntity<UserAccount> createUserAccount(@Valid @RequestBody UserAccount userAccount) {
         LOG.debug("Creating new user account");
-        UserAccount createdAccount = userAccountService.createUserAccount(
-            userAccountMapper.convertDtoToEntity(userAccountDto)
-        );
+        UserAccount createdAccount = userAccountService.createUserAccount(userAccount);
         return new ResponseEntity<>(createdAccount, HttpStatus.CREATED);
     }
 
     /**
      * Sets a {@code UserAccount}'s associated {@code User}.
      *
-     * @param userAccountId    the id of the account.
-     * @param requestUser the {@code User} to be set as the account's user.
+     * @param userAccountId the id of the account.
+     * @param userId        the id of the {@code User} to be set as the account's user.
      * @return 201 with the user if the action was successful,
      * 404 if the user or the account weren't found.
      */
-    @PostMapping("/{userAccountId}/user")
+    @PostMapping("/{userAccountId}/user/{userId}")
     public ResponseEntity<User> setAccountUser(
         @PathVariable Long userAccountId,
-        @RequestBody User requestUser
+        @PathVariable Long userId
     ) {
         LOG.debug("Setting the user of account with id {}", userAccountId);
-        User user = userAccountService.setAccountUser(userAccountId, requestUser);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+        User user = userAccountService.setAccountUser(userAccountId, userId);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     /**
      * Updates the user account with the given id with the new account details.
      *
-     * @param id            the id of the existing account.
+     * @param id                    the id of the existing account.
      * @param userAccountDetailsDto the new details of the account.
      * @return 200 and the changed account if the action was successful,
      * 404 if the account was not found.

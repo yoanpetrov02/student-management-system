@@ -32,7 +32,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private static final int BEARER_TOKEN_START = 7;
 
-    private final UserDetailsService userDetailsService;
+    private final UserDetailsService userAccountService;
     private final JwtService jwtService;
 
     /**
@@ -65,7 +65,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             final String username = jwtService.extractUsername(jwt);
 
             if (username != null && noExistingAuthentication()) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UserDetails userDetails = userAccountService.loadUserByUsername(username);
                 if (!jwtService.validateToken(jwt, userDetails)) {
                     LOG.debug("Invalid JWT token, passing the request further down the filter chain");
                     return;

@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,7 @@ import org.springframework.stereotype.Service;
 public class AuthenticationService implements CommandLineRunner {
 
     private final UserAccountRepository accountRepository;
-    private final PasswordEncoder encoder;
+    private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
@@ -52,13 +53,13 @@ public class AuthenticationService implements CommandLineRunner {
 
         UserAccount userAccount = UserAccount.builder()
             .username(username)
-            .password(encoder.encode(password))
+            .password(passwordEncoder.encode(password))
             .role(Role.STUDENT)
             .build();
         userAccount.setUser(new User()); // create a new User for each UserAccount
         accountRepository.save(userAccount);
 
-        var jwtToken = jwtService.generateToken(userAccount);
+        var jwtToken = jwtService.generateToken(convertToUserDetails(userAccount));
 
         return AuthenticationResponse.builder()
             .accessToken(jwtToken)
@@ -83,7 +84,7 @@ public class AuthenticationService implements CommandLineRunner {
                 userAccountDto.getUsername(),
                 userAccountDto.getPassword()));
 
-        var jwtToken = jwtService.generateToken(user);
+        var jwtToken = jwtService.generateToken(convertToUserDetails(user));
 
         return AuthenticationResponse.builder()
             .accessToken(jwtToken)
@@ -104,8 +105,9 @@ public class AuthenticationService implements CommandLineRunner {
        if (username != null) {
            var user = accountRepository.findByUsername(username)
                .orElseThrow(() -> new ResourceNotFoundException("User account not found"));
-           if (jwtService.validateToken(oldJwtToken, user)) {
-               var refreshToken = jwtService.generateRefreshToken(user);
+           UserDetails userDetails = convertToUserDetails(user);
+           if (jwtService.validateToken(oldJwtToken, userDetails)) {
+               var refreshToken = jwtService.generateRefreshToken(userDetails);
                return AuthenticationResponse.builder()
                    .accessToken("")
                    .refreshToken(refreshToken).build();
@@ -118,8 +120,16 @@ public class AuthenticationService implements CommandLineRunner {
     public void run(String... args) throws Exception {
         UserAccount adminAccount = UserAccount.builder()
             .username("admin")
-            .password(encoder.encode("admin"))
+            .password(passwordEncoder.encode("admin"))
             .role(Role.ADMIN).build();
         accountRepository.save(adminAccount);
+    }
+
+    private UserDetails convertToUserDetails(UserAccount account) {
+        return new org.springframework.security.core.userdetails.User(
+            account.getUsername(),
+            account.getPassword(),
+            true, true, true, true,
+            account.getRole().getAuthorities());
     }
 }
