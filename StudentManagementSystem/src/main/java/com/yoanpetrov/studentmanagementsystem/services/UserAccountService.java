@@ -77,14 +77,14 @@ public class UserAccountService implements UserDetailsService {
      * Sets the given {@code UserAccount}'s {@code User}.
      *
      * @param userAccountId  the id of the account.
-     * @param userToSet the {@code User} to be set as the account's user.
+     * @param userId the id of the {@code User} to be set as the account's user.
      * @return the set {@code User} if the action was successful.
      * @throws ResourceNotFoundException if the user or the account were not found.
      */
-    public User setAccountUser(Long userAccountId, User userToSet) {
+    public User setAccountUser(Long userAccountId, Long userId) {
         UserAccount userAccount = accountRepository.findById(userAccountId)
             .orElseThrow(() -> new ResourceNotFoundException("User account not found"));
-        User user = userRepository.findById(userToSet.getUserId())
+        User user = userRepository.findById(userId)
             .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         userAccount.setUser(user);
         accountRepository.save(userAccount);
