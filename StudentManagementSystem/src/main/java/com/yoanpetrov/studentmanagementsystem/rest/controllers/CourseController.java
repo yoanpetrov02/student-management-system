@@ -95,17 +95,17 @@ public class CourseController {
      * Adds a user to a course.
      *
      * @param courseId    the id of the course.
-     * @param requestUser the {@code User} to be added to the course.
+     * @param userId the id of the {@code User} to be added to the course.
      * @return 201 with the user if the action was successful,
      * 404 if the user or the course weren't found.
      */
-    @PostMapping("/{courseId}/users")
+    @PostMapping("/{courseId}/users/{userId}")
     public ResponseEntity<User> addUserToCourse(
         @PathVariable Long courseId,
-        @RequestBody User requestUser
+        @PathVariable Long userId
     ) {
         LOG.debug("Adding user to course with id {}", courseId);
-        User user = courseService.addUserToCourse(courseId, requestUser);
+        User user = courseService.addUserToCourse(courseId, userId);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
@@ -158,17 +158,17 @@ public class CourseController {
      * Removes a user from a course.
      *
      * @param courseId    the id of the course.
-     * @param requestUser the {@code User} to be removed from the course.
+     * @param userId the id of the {@code User} to be removed from the course.
      * @return 200 with the user if the action was successful,
      * 404 if the user or the course weren't found.
      */
-    @DeleteMapping("/{courseId}/users")
+    @DeleteMapping("/{courseId}/users/{userId}")
     public ResponseEntity<User> removeUserFromCourse(
         @PathVariable Long courseId,
-        @RequestBody User requestUser
+        @PathVariable Long userId
     ) {
         LOG.debug("Removing user from course with id {}", courseId);
-        User user = courseService.removeUserFromCourse(courseId, requestUser);
+        User user = courseService.removeUserFromCourse(courseId, userId);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }

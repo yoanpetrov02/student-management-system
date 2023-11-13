@@ -76,17 +76,17 @@ public class AccountController {
      * Sets a {@code UserAccount}'s associated {@code User}.
      *
      * @param userAccountId    the id of the account.
-     * @param requestUser the {@code User} to be set as the account's user.
+     * @param userId the id of the {@code User} to be set as the account's user.
      * @return 201 with the user if the action was successful,
      * 404 if the user or the account weren't found.
      */
-    @PostMapping("/{userAccountId}/user")
+    @PostMapping("/{userAccountId}/user/{userId}")
     public ResponseEntity<User> setAccountUser(
         @PathVariable Long userAccountId,
-        @RequestBody User requestUser
+        @PathVariable Long userId
     ) {
         LOG.debug("Setting the user of account with id {}", userAccountId);
-        User user = userAccountService.setAccountUser(userAccountId, requestUser);
+        User user = userAccountService.setAccountUser(userAccountId, userId);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
