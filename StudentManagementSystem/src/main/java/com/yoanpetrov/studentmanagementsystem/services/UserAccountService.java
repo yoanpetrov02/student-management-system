@@ -12,9 +12,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * User account details service. Used to load a user account by its username from the database.
@@ -27,6 +29,7 @@ public class UserAccountService implements UserDetailsService {
 
     private final UserAccountRepository accountRepository;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Loads the user from the database.
@@ -38,8 +41,17 @@ public class UserAccountService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         LOG.debug("Loading user by username: {}", username);
-        return accountRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+        Optional<UserAccount> accountFromDb = accountRepository.findByUsername(username);
+        if (accountFromDb.isEmpty()) {
+            throw new UsernameNotFoundException("Username not found");
+        }
+        UserAccount account = accountFromDb.get();
+
+        return new org.springframework.security.core.userdetails.User(
+            account.getUsername(),
+            account.getPassword(),
+            true, true, true, true,
+            account.getRole().getAuthorities());
     }
 
     /**
@@ -70,6 +82,7 @@ public class UserAccountService implements UserDetailsService {
      * @return the saved account in the database.
      */
     public UserAccount createUserAccount(UserAccount userAccount) {
+        userAccount.setPassword(passwordEncoder.encode(userAccount.getPassword()));
         return accountRepository.save(userAccount);
     }
 
@@ -103,7 +116,7 @@ public class UserAccountService implements UserDetailsService {
         UserAccount userAccount = accountRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("User account not found"));
         userAccount.setUsername(userAccountDetails.getUsername());
-        userAccount.setPassword(userAccountDetails.getPassword());
+        userAccount.setPassword(passwordEncoder.encode(userAccountDetails.getPassword()));
         userAccount.setRole(userAccountDetails.getRole());
 
         return accountRepository.save(userAccount);
