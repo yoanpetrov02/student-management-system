@@ -106,11 +106,10 @@ public class CourseIntegrationTests {
             .post("api/v1/users").then()
             .assertThat()
             .statusCode(HttpStatus.CREATED.value());
-        with().body(testUser)
-            .contentType(ContentType.JSON)
-            .post(BASE_URI + "/1/users").then()
+        with().contentType(ContentType.JSON)
+            .post(BASE_URI + "/1/users/1").then()
             .assertThat()
-            .statusCode(HttpStatus.CREATED.value());
+            .statusCode(HttpStatus.OK.value());
         testCourse.setNumberOfStudents(testCourse.getNumberOfStudents() + 1);
     }
 
@@ -128,9 +127,8 @@ public class CourseIntegrationTests {
     @Order(7)
     @Test
     void testRemoveUserFromCourse() {
-        with().body(testUser)
-            .contentType(ContentType.JSON)
-            .delete(BASE_URI + "/1/users").then()
+        with().contentType(ContentType.JSON)
+            .delete(BASE_URI + "/1/users/1").then()
             .assertThat()
             .statusCode(HttpStatus.OK.value());
         given().get(BASE_URI + "/1/users").then()
