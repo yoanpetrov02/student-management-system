@@ -4,8 +4,6 @@ import org.apache.log4j.BasicConfigurator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-// TODO: 04-Nov-23 Write integration tests for AccountController.
-
 /**
  * Main starting point of the application.
  */
