@@ -106,7 +106,7 @@ public class CourseController {
     ) {
         LOG.debug("Adding user to course with id {}", courseId);
         User user = courseService.addUserToCourse(courseId, userId);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     /**

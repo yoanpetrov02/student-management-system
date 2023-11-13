@@ -87,7 +87,7 @@ public class AccountController {
     ) {
         LOG.debug("Setting the user of account with id {}", userAccountId);
         User user = userAccountService.setAccountUser(userAccountId, userId);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     /**
