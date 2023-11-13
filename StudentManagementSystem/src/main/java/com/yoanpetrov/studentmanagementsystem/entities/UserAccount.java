@@ -3,10 +3,6 @@ package com.yoanpetrov.studentmanagementsystem.entities;
 import com.yoanpetrov.studentmanagementsystem.security.Role;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
 
 /**
  * Represents a user account. Each user account is connected to a single user.
@@ -19,7 +15,7 @@ import java.util.Collection;
 @Builder
 @Entity
 @Table(name = "user_accounts")
-public class UserAccount implements UserDetails {
+public class UserAccount {
 
     @Id
     @GeneratedValue
@@ -35,39 +31,4 @@ public class UserAccount implements UserDetails {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return role.getAuthorities();
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }

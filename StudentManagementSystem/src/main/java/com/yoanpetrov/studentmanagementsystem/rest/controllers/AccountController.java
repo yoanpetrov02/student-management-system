@@ -35,7 +35,7 @@ public class AccountController {
     @GetMapping
     public ResponseEntity<?> getAllAccounts() {
         LOG.debug("Getting all user accounts");
-        List<UserAccount> accounts = new ArrayList<>(userAccountService.getAllUserAccounts());
+        List<UserAccount> accounts = userAccountService.getAllUserAccounts();
         if (accounts.isEmpty()) {
             LOG.debug("No existing user accounts, returning 204");
             return new ResponseEntity<>("No existing user accounts", HttpStatus.NO_CONTENT);
@@ -60,15 +60,13 @@ public class AccountController {
     /**
      * Creates the given {@code UserAccount}.
      *
-     * @param userAccountDto the account to be created.
+     * @param userAccount the account to be created.
      * @return 200 and the created account if it was successfully created.
      */
     @PostMapping
-    public ResponseEntity<UserAccount> createUserAccount(@Valid @RequestBody UserAccountDto userAccountDto) {
+    public ResponseEntity<UserAccount> createUserAccount(@Valid @RequestBody UserAccount userAccount) {
         LOG.debug("Creating new user account");
-        UserAccount createdAccount = userAccountService.createUserAccount(
-            userAccountMapper.convertDtoToEntity(userAccountDto)
-        );
+        UserAccount createdAccount = userAccountService.createUserAccount(userAccount);
         return new ResponseEntity<>(createdAccount, HttpStatus.CREATED);
     }
 
