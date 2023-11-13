@@ -95,7 +95,7 @@ public class UserController {
     /**
      * Adds a course to a user.
      *
-     * @param userId        the id of the user.
+     * @param userId   the id of the user.
      * @param courseId the id of the {@code Course} to be added to the user.
      * @return 201 with the course if the action was successful,
      * 404 if the user or the course weren't found.
@@ -113,7 +113,7 @@ public class UserController {
     /**
      * Updates the user with the given id with the new user details.
      *
-     * @param id          the id of the existing user.
+     * @param id             the id of the existing user.
      * @param userDetailsDto the new details of the user.
      * @return 200 and the changed user if the action was successful,
      * 404 if the user was not found.
@@ -158,7 +158,7 @@ public class UserController {
     /**
      * Removes a course from a user.
      *
-     * @param userId        the id of the user.
+     * @param userId   the id of the user.
      * @param courseId the id of the {@code Course} to be removed from the user.
      * @return 201 with the course if the action was successful,
      * 404 if the user or the course weren't found.
