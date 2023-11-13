@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * Disables security for the tests.
@@ -66,7 +68,7 @@ public class TestConfig {
     @Bean
     public UserAccount testUserAccount() {
         return UserAccount.builder()
-            .accountId(1L)
+            .accountId(2L)
             .username("test")
             .password("test")
             .role(Role.STUDENT)
@@ -76,9 +78,19 @@ public class TestConfig {
     @Bean
     public UserAccount updatedUserAccount() {
         return UserAccount.builder()
-            .accountId(1L)
+            .accountId(2L)
             .username("test")
             .password("updated")
+            .role(Role.STUDENT)
+            .build();
+    }
+
+    @Bean
+    public UserAccount userAccountToDelete() {
+        return UserAccount.builder()
+            .accountId(3L)
+            .username("deleted")
+            .password("test")
             .role(Role.STUDENT)
             .build();
     }

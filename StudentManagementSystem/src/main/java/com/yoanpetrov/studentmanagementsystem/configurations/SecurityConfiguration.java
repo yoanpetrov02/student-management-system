@@ -36,6 +36,7 @@ public class SecurityConfiguration {
 
     private final JwtRequestFilter jwtRequestFilter;
     private final UserAccountService userAccountService;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Builds the {@code SecurityFilterChain} bean.
@@ -83,7 +84,7 @@ public class SecurityConfiguration {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         var authProvider = new DaoAuthenticationProvider();
-        authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setPasswordEncoder(passwordEncoder);
         authProvider.setUserDetailsService(userAccountService);
         return authProvider;
     }
@@ -93,15 +94,5 @@ public class SecurityConfiguration {
         AuthenticationConfiguration config
     ) throws Exception {
         return config.getAuthenticationManager();
-    }
-
-    /**
-     * Builds the {@code PasswordEncoder} bean.
-     *
-     * @return a BCrypt password encoder to be used for encrypting passwords.
-     */
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }
