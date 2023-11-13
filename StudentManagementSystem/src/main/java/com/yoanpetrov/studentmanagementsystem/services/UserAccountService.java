@@ -76,8 +76,8 @@ public class UserAccountService implements UserDetailsService {
     /**
      * Sets the given {@code UserAccount}'s {@code User}.
      *
-     * @param userAccountId  the id of the account.
-     * @param userId the id of the {@code User} to be set as the account's user.
+     * @param userAccountId the id of the account.
+     * @param userId        the id of the {@code User} to be set as the account's user.
      * @return the set {@code User} if the action was successful.
      * @throws ResourceNotFoundException if the user or the account were not found.
      */
@@ -94,7 +94,7 @@ public class UserAccountService implements UserDetailsService {
     /**
      * Updates the user account with the given id with the new user account details.
      *
-     * @param id            the id of the account.
+     * @param id                 the id of the account.
      * @param userAccountDetails the new account details.
      * @return the updated account.
      * @throws ResourceNotFoundException if the account was not found.

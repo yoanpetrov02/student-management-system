@@ -75,8 +75,8 @@ public class AccountController {
     /**
      * Sets a {@code UserAccount}'s associated {@code User}.
      *
-     * @param userAccountId    the id of the account.
-     * @param userId the id of the {@code User} to be set as the account's user.
+     * @param userAccountId the id of the account.
+     * @param userId        the id of the {@code User} to be set as the account's user.
      * @return 201 with the user if the action was successful,
      * 404 if the user or the account weren't found.
      */
@@ -93,7 +93,7 @@ public class AccountController {
     /**
      * Updates the user account with the given id with the new account details.
      *
-     * @param id            the id of the existing account.
+     * @param id                    the id of the existing account.
      * @param userAccountDetailsDto the new details of the account.
      * @return 200 and the changed account if the action was successful,
      * 404 if the account was not found.

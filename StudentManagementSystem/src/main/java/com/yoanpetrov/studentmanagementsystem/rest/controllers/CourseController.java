@@ -94,8 +94,8 @@ public class CourseController {
     /**
      * Adds a user to a course.
      *
-     * @param courseId    the id of the course.
-     * @param userId the id of the {@code User} to be added to the course.
+     * @param courseId the id of the course.
+     * @param userId   the id of the {@code User} to be added to the course.
      * @return 201 with the user if the action was successful,
      * 404 if the user or the course weren't found.
      */
@@ -112,7 +112,7 @@ public class CourseController {
     /**
      * Updates the course with the given id with the new course details.
      *
-     * @param id            the id of the existing course.
+     * @param id               the id of the existing course.
      * @param courseDetailsDto the new details of the course.
      * @return 200 and the changed course if the action was successful,
      * 404 if the course was not found.
@@ -157,8 +157,8 @@ public class CourseController {
     /**
      * Removes a user from a course.
      *
-     * @param courseId    the id of the course.
-     * @param userId the id of the {@code User} to be removed from the course.
+     * @param courseId the id of the course.
+     * @param userId   the id of the {@code User} to be removed from the course.
      * @return 200 with the user if the action was successful,
      * 404 if the user or the course weren't found.
      */
