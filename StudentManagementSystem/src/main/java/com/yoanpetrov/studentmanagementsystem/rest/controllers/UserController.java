@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -85,6 +86,7 @@ public class UserController {
      * @return 200 and the created user if it was successfully created.
      */
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> createUser(@Valid @RequestBody UserDto userDto) {
         LOG.debug("Creating new user");
         User createdUser = userService.createUser(
@@ -135,6 +137,7 @@ public class UserController {
      * @return 200 and a message if the deletion was successful.
      */
     @DeleteMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteAllUsers() {
         LOG.debug("Deleting all users");
         userService.deleteAllUsers();
@@ -149,6 +152,7 @@ public class UserController {
      * 404 if the user was not found.
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         LOG.debug("Deleting user with id {}", id);
         userService.deleteUser(id);
