@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -84,6 +85,7 @@ public class CourseController {
      * @return 200 and the created course if it was successfully created.
      */
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Course> createCourse(@RequestBody CourseDto courseDto) {
         LOG.debug("Creating new course");
         Course createdCourse = courseService.createCourse(
@@ -118,6 +120,7 @@ public class CourseController {
      * 404 if the course was not found.
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public ResponseEntity<Course> updateCourse(
         @PathVariable Long id,
         @RequestBody CourseDto courseDetailsDto
@@ -134,6 +137,7 @@ public class CourseController {
      * @return 200 and a message if the deletion was successful.
      */
     @DeleteMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteAllCourses() {
         LOG.debug("Deleting all courses");
         courseService.deleteAllCourses();
@@ -148,6 +152,7 @@ public class CourseController {
      * 404 if the course was not found.
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteCourse(@PathVariable Long id) {
         LOG.debug("Deleting course with id {}", id);
         courseService.deleteCourse(id);
