@@ -56,16 +56,6 @@ public class SecurityConfiguration {
                 c
                     .requestMatchers(WHITELISTED_ENDPOINTS)
                     .permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/v1/courses/{courseId}/users").hasAnyRole(ADMIN.name(), TEACHER.name())
-                    .requestMatchers(HttpMethod.PUT, "/api/v1/courses/{id}").hasAnyRole(ADMIN.name(), TEACHER.name())
-                    .requestMatchers(HttpMethod.DELETE, "/api/v1/courses/{courseId}/users").hasAnyRole(ADMIN.name(), TEACHER.name())
-                    .requestMatchers(HttpMethod.POST, "/api/v1/users").hasAnyRole(ADMIN.name())
-                    .requestMatchers(HttpMethod.DELETE, "/api/v1/users").hasAnyRole(ADMIN.name())
-                    .requestMatchers(HttpMethod.DELETE, "/api/v1/users/{id}").hasAnyRole(ADMIN.name())
-                    .requestMatchers(HttpMethod.POST, "/api/v1/courses").hasAnyRole(ADMIN.name())
-                    .requestMatchers(HttpMethod.DELETE, "/api/v1/courses").hasAnyRole(ADMIN.name())
-                    .requestMatchers(HttpMethod.DELETE, "/api/v1/courses/{id}").hasAnyRole(ADMIN.name())
-                    .requestMatchers("/api/v1/accounts").hasAnyRole(ADMIN.name())
                     .anyRequest().authenticated())
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(c ->
