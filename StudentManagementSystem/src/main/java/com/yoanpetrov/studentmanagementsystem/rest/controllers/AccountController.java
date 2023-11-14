@@ -93,18 +93,18 @@ public class AccountController {
      * Updates the user account with the given id with the new account details.
      *
      * @param id                    the id of the existing account.
-     * @param userAccountDetailsDto the new details of the account.
+     * @param userAccountDetails the new details of the account.
      * @return 200 and the changed account if the action was successful,
      * 404 if the account was not found.
      */
     @PutMapping("/{id}")
     public ResponseEntity<UserAccount> updateUserAccount(
         @PathVariable Long id,
-        @RequestBody UserAccountDto userAccountDetailsDto
+        @RequestBody UserAccount userAccountDetails
     ) {
         LOG.debug("Updating user account with id {}", id);
         UserAccount userAccount = userAccountService.updateUserAccount(
-            id, userAccountMapper.convertDtoToEntity(userAccountDetailsDto));
+            id, userAccountDetails);
         return new ResponseEntity<>(userAccount, HttpStatus.OK);
     }
 

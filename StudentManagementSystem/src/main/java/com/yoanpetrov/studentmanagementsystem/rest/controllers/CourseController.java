@@ -5,6 +5,7 @@ import com.yoanpetrov.studentmanagementsystem.entities.User;
 import com.yoanpetrov.studentmanagementsystem.mappers.CourseMapper;
 import com.yoanpetrov.studentmanagementsystem.rest.dto.CourseDto;
 import com.yoanpetrov.studentmanagementsystem.services.CourseService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +87,7 @@ public class CourseController {
      */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Course> createCourse(@RequestBody CourseDto courseDto) {
+    public ResponseEntity<Course> createCourse(@Valid @RequestBody CourseDto courseDto) {
         LOG.debug("Creating new course");
         Course createdCourse = courseService.createCourse(
             courseMapper.convertDtoToEntity(courseDto));
@@ -123,7 +124,7 @@ public class CourseController {
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public ResponseEntity<Course> updateCourse(
         @PathVariable Long id,
-        @RequestBody CourseDto courseDetailsDto
+        @Valid @RequestBody CourseDto courseDetailsDto
     ) {
         LOG.debug("Updating course with id {}", id);
         Course course = courseService.updateCourse(id,
