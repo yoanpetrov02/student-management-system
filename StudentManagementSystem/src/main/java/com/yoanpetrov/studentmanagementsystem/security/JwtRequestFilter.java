@@ -1,5 +1,6 @@
-package com.yoanpetrov.studentmanagementsystem.security.jwt;
+package com.yoanpetrov.studentmanagementsystem.security;
 
+import com.yoanpetrov.studentmanagementsystem.services.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;

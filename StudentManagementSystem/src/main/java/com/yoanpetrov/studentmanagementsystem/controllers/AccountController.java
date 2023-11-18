@@ -1,9 +1,8 @@
-package com.yoanpetrov.studentmanagementsystem.rest.controllers;
+package com.yoanpetrov.studentmanagementsystem.controllers;
 
 import com.yoanpetrov.studentmanagementsystem.entities.User;
 import com.yoanpetrov.studentmanagementsystem.entities.UserAccount;
 import com.yoanpetrov.studentmanagementsystem.mappers.UserAccountMapper;
-import com.yoanpetrov.studentmanagementsystem.rest.dto.UserAccountDto;
 import com.yoanpetrov.studentmanagementsystem.services.UserAccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/accounts")
+@PreAuthorize("hasRole('ADMIN')")
 public class AccountController {
 
     private static final Logger LOG = LoggerFactory.getLogger(AccountController.class);
@@ -91,18 +92,18 @@ public class AccountController {
      * Updates the user account with the given id with the new account details.
      *
      * @param id                    the id of the existing account.
-     * @param userAccountDetailsDto the new details of the account.
+     * @param userAccountDetails the new details of the account.
      * @return 200 and the changed account if the action was successful,
      * 404 if the account was not found.
      */
     @PutMapping("/{id}")
     public ResponseEntity<UserAccount> updateUserAccount(
         @PathVariable Long id,
-        @RequestBody UserAccountDto userAccountDetailsDto
+        @RequestBody UserAccount userAccountDetails
     ) {
         LOG.debug("Updating user account with id {}", id);
         UserAccount userAccount = userAccountService.updateUserAccount(
-            id, userAccountMapper.convertDtoToEntity(userAccountDetailsDto));
+            id, userAccountDetails);
         return new ResponseEntity<>(userAccount, HttpStatus.OK);
     }
 

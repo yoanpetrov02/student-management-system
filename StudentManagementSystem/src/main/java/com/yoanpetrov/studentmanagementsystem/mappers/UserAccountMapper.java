@@ -1,7 +1,7 @@
 package com.yoanpetrov.studentmanagementsystem.mappers;
 
 import com.yoanpetrov.studentmanagementsystem.entities.UserAccount;
-import com.yoanpetrov.studentmanagementsystem.rest.dto.UserAccountDto;
+import com.yoanpetrov.studentmanagementsystem.dto.UserAccountDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.springframework.stereotype.Component;

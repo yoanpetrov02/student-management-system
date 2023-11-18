@@ -1,15 +1,17 @@
-package com.yoanpetrov.studentmanagementsystem.rest.controllers;
+package com.yoanpetrov.studentmanagementsystem.controllers;
 
 import com.yoanpetrov.studentmanagementsystem.entities.Course;
 import com.yoanpetrov.studentmanagementsystem.entities.User;
 import com.yoanpetrov.studentmanagementsystem.mappers.CourseMapper;
-import com.yoanpetrov.studentmanagementsystem.rest.dto.CourseDto;
+import com.yoanpetrov.studentmanagementsystem.dto.CourseDto;
 import com.yoanpetrov.studentmanagementsystem.services.CourseService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -84,7 +86,8 @@ public class CourseController {
      * @return 200 and the created course if it was successfully created.
      */
     @PostMapping
-    public ResponseEntity<Course> createCourse(@RequestBody CourseDto courseDto) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Course> createCourse(@Valid @RequestBody CourseDto courseDto) {
         LOG.debug("Creating new course");
         Course createdCourse = courseService.createCourse(
             courseMapper.convertDtoToEntity(courseDto));
@@ -118,9 +121,10 @@ public class CourseController {
      * 404 if the course was not found.
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public ResponseEntity<Course> updateCourse(
         @PathVariable Long id,
-        @RequestBody CourseDto courseDetailsDto
+        @Valid @RequestBody CourseDto courseDetailsDto
     ) {
         LOG.debug("Updating course with id {}", id);
         Course course = courseService.updateCourse(id,
@@ -134,6 +138,7 @@ public class CourseController {
      * @return 200 and a message if the deletion was successful.
      */
     @DeleteMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteAllCourses() {
         LOG.debug("Deleting all courses");
         courseService.deleteAllCourses();
@@ -148,6 +153,7 @@ public class CourseController {
      * 404 if the course was not found.
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteCourse(@PathVariable Long id) {
         LOG.debug("Deleting course with id {}", id);
         courseService.deleteCourse(id);

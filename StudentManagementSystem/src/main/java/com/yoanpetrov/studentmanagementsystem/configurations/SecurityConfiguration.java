@@ -1,15 +1,15 @@
 package com.yoanpetrov.studentmanagementsystem.configurations;
 
-import com.yoanpetrov.studentmanagementsystem.security.jwt.JwtRequestFilter;
+import com.yoanpetrov.studentmanagementsystem.security.JwtRequestFilter;
 import com.yoanpetrov.studentmanagementsystem.services.UserAccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,14 +18,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.yoanpetrov.studentmanagementsystem.security.Role.*;
-
 /**
  * Configures the beans that are needed for authentication/authorization.
  */
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfiguration {
 
     private static final String[] WHITELISTED_ENDPOINTS = {
@@ -54,23 +53,11 @@ public class SecurityConfiguration {
                 c
                     .requestMatchers(WHITELISTED_ENDPOINTS)
                     .permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/v1/courses/{courseId}/users").hasAnyRole(ADMIN.name(), TEACHER.name())
-                    .requestMatchers(HttpMethod.PUT, "/api/v1/courses/{id}").hasAnyRole(ADMIN.name(), TEACHER.name())
-                    .requestMatchers(HttpMethod.DELETE, "/api/v1/courses/{courseId}/users").hasAnyRole(ADMIN.name(), TEACHER.name())
-                    .requestMatchers(HttpMethod.POST, "/api/v1/users").hasAnyRole(ADMIN.name())
-                    .requestMatchers(HttpMethod.DELETE, "/api/v1/users").hasAnyRole(ADMIN.name())
-                    .requestMatchers(HttpMethod.DELETE, "/api/v1/users/{id}").hasAnyRole(ADMIN.name())
-                    .requestMatchers(HttpMethod.POST, "/api/v1/courses").hasAnyRole(ADMIN.name())
-                    .requestMatchers(HttpMethod.DELETE, "/api/v1/courses").hasAnyRole(ADMIN.name())
-                    .requestMatchers(HttpMethod.DELETE, "/api/v1/courses/{id}").hasAnyRole(ADMIN.name())
-                    .requestMatchers("/api/v1/accounts").hasAnyRole(ADMIN.name())
                     .anyRequest().authenticated())
             .csrf(AbstractHttpConfigurer::disable)
-            .sessionManagement(c ->
-                c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 
