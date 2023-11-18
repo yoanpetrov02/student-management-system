@@ -1,9 +1,9 @@
-package com.yoanpetrov.studentmanagementsystem.rest.controllers;
+package com.yoanpetrov.studentmanagementsystem.controllers;
 
 import com.yoanpetrov.studentmanagementsystem.entities.Course;
 import com.yoanpetrov.studentmanagementsystem.entities.User;
 import com.yoanpetrov.studentmanagementsystem.mappers.CourseMapper;
-import com.yoanpetrov.studentmanagementsystem.rest.dto.CourseDto;
+import com.yoanpetrov.studentmanagementsystem.dto.CourseDto;
 import com.yoanpetrov.studentmanagementsystem.services.CourseService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

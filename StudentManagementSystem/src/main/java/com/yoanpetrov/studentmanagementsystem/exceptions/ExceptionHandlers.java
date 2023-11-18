@@ -1,5 +1,7 @@
 package com.yoanpetrov.studentmanagementsystem.exceptions;
 
+import com.yoanpetrov.studentmanagementsystem.dto.ErrorResponse;
+import com.yoanpetrov.studentmanagementsystem.dto.ValidationErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,7 +27,7 @@ public class ExceptionHandlers extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFoundException(Throwable ex) {
         log.debug("ResourceNotFoundException, returning 404. Message: {}", ex.getMessage());
-        return new ResponseEntity<>(new ErrorBody(
+        return new ResponseEntity<>(new ErrorResponse(
             "404",
             ex.getMessage()),
             HttpStatus.NOT_FOUND);
@@ -34,7 +36,7 @@ public class ExceptionHandlers extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ResourceConflictException.class)
     public ResponseEntity<?> handleResourceConflictException(Throwable ex) {
         log.debug("ResourceConflictException, returning 409. Message: {}", ex.getMessage());
-        return new ResponseEntity<>(new ErrorBody(
+        return new ResponseEntity<>(new ErrorResponse(
             "409",
             ex.getMessage()),
             HttpStatus.CONFLICT);
@@ -43,7 +45,7 @@ public class ExceptionHandlers extends ResponseEntityExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> handleBadCredentialsException(Throwable ex) {
         log.debug("BadCredentialsException, returning 401. Message: {}", ex.getMessage());
-        return new ResponseEntity<>(new ErrorBody(
+        return new ResponseEntity<>(new ErrorResponse(
             "401",
             ex.getMessage()),
             HttpStatus.UNAUTHORIZED);
@@ -52,7 +54,7 @@ public class ExceptionHandlers extends ResponseEntityExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<?> handleAccessDeniedException(Throwable ex) {
         log.debug("AccessDeniedException, returning 401. Message: {}", ex.getMessage());
-        return new ResponseEntity<>(new ErrorBody(
+        return new ResponseEntity<>(new ErrorResponse(
             "401",
             "You are not authorized to access this endpoint"),
             HttpStatus.UNAUTHORIZED);
@@ -72,7 +74,7 @@ public class ExceptionHandlers extends ResponseEntityExceptionHandler {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        ValidationErrorBody errorBody = ValidationErrorBody.builder()
+        ValidationErrorResponse errorBody = ValidationErrorResponse.builder()
             .status("400")
             .errorMessage("JSON validation error")
             .errors(errors).build();

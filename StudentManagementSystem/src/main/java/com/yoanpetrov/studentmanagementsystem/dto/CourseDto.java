@@ -1,4 +1,4 @@
-package com.yoanpetrov.studentmanagementsystem.rest.dto;
+package com.yoanpetrov.studentmanagementsystem.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

@@ -1,4 +1,4 @@
-package com.yoanpetrov.studentmanagementsystem.security;
+package com.yoanpetrov.studentmanagementsystem.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

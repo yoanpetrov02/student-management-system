@@ -1,4 +1,4 @@
-package com.yoanpetrov.studentmanagementsystem.security.jwt;
+package com.yoanpetrov.studentmanagementsystem.services;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

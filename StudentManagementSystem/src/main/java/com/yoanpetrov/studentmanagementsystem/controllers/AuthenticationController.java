@@ -1,8 +1,8 @@
-package com.yoanpetrov.studentmanagementsystem.rest.controllers;
+package com.yoanpetrov.studentmanagementsystem.controllers;
 
 import com.yoanpetrov.studentmanagementsystem.exceptions.ResourceConflictException;
-import com.yoanpetrov.studentmanagementsystem.rest.dto.UserAccountDto;
-import com.yoanpetrov.studentmanagementsystem.security.AuthenticationResponse;
+import com.yoanpetrov.studentmanagementsystem.dto.UserAccountDto;
+import com.yoanpetrov.studentmanagementsystem.dto.AuthenticationResponse;
 import com.yoanpetrov.studentmanagementsystem.services.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
