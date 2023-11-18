@@ -116,7 +116,7 @@ public class AuthenticationService implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         UserAccount adminAccount = UserAccount.builder()
             .username("admin")
             .password(passwordEncoder.encode("admin"))
