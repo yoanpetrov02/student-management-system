@@ -18,6 +18,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Authentication service. User to register and authenticate users.
  */
@@ -29,6 +31,23 @@ public class AuthenticationService implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+
+    @Override
+    public void run(String... args) {
+        UserAccount adminAccount = UserAccount.builder()
+            .username("admin")
+            .password(passwordEncoder.encode("admin"))
+            .role(Role.ADMIN).build();
+        UserAccount teacherAccount = UserAccount.builder()
+            .username("teacher")
+            .password(passwordEncoder.encode("teacher"))
+            .role(Role.TEACHER).build();
+        UserAccount studentAccount = UserAccount.builder()
+            .username("student")
+            .password(passwordEncoder.encode("student"))
+            .role(Role.STUDENT).build();
+        accountRepository.saveAll(List.of(adminAccount, teacherAccount, studentAccount));
+    }
 
     /**
      * Checks whether a user account exists in the database.
@@ -113,15 +132,6 @@ public class AuthenticationService implements CommandLineRunner {
            }
        }
        return new AuthenticationResponse("", "");
-    }
-
-    @Override
-    public void run(String... args) {
-        UserAccount adminAccount = UserAccount.builder()
-            .username("admin")
-            .password(passwordEncoder.encode("admin"))
-            .role(Role.ADMIN).build();
-        accountRepository.save(adminAccount);
     }
 
     private UserDetails convertToUserDetails(UserAccount account) {

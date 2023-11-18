@@ -15,6 +15,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.HashMap;
@@ -74,10 +75,22 @@ public class ExceptionHandlers extends ResponseEntityExceptionHandler {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        ValidationErrorResponse errorBody = ValidationErrorResponse.builder()
+        ValidationErrorResponse response = ValidationErrorResponse.builder()
             .status("400")
             .errorMessage("JSON validation error")
             .errors(errors).build();
-        return new ResponseEntity<>(errorBody, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(
+        @NonNull NoHandlerFoundException ex,
+        @NonNull HttpHeaders headers,
+        @NonNull HttpStatusCode status,
+        @NonNull WebRequest request)
+    {
+        log.debug("NoHandlerFoundException, returning 400.");
+        ErrorResponse response = new ErrorResponse("400", "Bad request, the endpoint does not exist.");
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
