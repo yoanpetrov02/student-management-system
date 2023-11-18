@@ -81,16 +81,4 @@ public class ExceptionHandlers extends ResponseEntityExceptionHandler {
             .errors(errors).build();
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
-
-    @Override
-    protected ResponseEntity<Object> handleNoHandlerFoundException(
-        @NonNull NoHandlerFoundException ex,
-        @NonNull HttpHeaders headers,
-        @NonNull HttpStatusCode status,
-        @NonNull WebRequest request)
-    {
-        log.debug("NoHandlerFoundException, returning 400.");
-        ErrorResponse response = new ErrorResponse("400", "Bad request, the endpoint does not exist.");
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
 }
