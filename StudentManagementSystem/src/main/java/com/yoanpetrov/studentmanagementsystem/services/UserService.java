@@ -6,6 +6,7 @@ import com.yoanpetrov.studentmanagementsystem.entities.User;
 import com.yoanpetrov.studentmanagementsystem.repositories.CourseRepository;
 import com.yoanpetrov.studentmanagementsystem.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -92,6 +93,7 @@ public class UserService {
      * @return the updated user.
      * @throws ResourceNotFoundException if the user was not found.
      */
+    @PostAuthorize("hasRole('ADMIN') or returnObject.userId == #userDetails.userId")
     public User updateUser(Long id, User userDetails) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("User not found"));
