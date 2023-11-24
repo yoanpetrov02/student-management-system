@@ -1,5 +1,8 @@
+/*
 package com.yoanpetrov.studentmanagementsystem.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yoanpetrov.studentmanagementsystem.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +25,7 @@ public class AccessDeniedHandler extends AccessDeniedHandlerImpl {
         HttpServletResponse response,
         AccessDeniedException exception
     ) throws IOException {
+        log.debug("AccessDeniedException handled.");
         response.setContentType(ContentType.APPLICATION_JSON.toString());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
@@ -29,6 +33,11 @@ public class AccessDeniedHandler extends AccessDeniedHandlerImpl {
                 authentication.getName(),
                 request.getRequestURI());
         }
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You are not authorized to access this endpoint.");
+        String json = new ObjectMapper().writeValueAsString(
+            new ErrorResponse("401", "You are not authorized to access this resource."));
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().write(json);
+        response.flushBuffer();
     }
 }
+*/

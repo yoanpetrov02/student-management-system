@@ -1,5 +1,8 @@
+/*
 package com.yoanpetrov.studentmanagementsystem.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yoanpetrov.studentmanagementsystem.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +17,7 @@ import java.io.IOException;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class HttpForbiddenEntryPoint extends Http403ForbiddenEntryPoint {
-
-    private final HttpEndpointChecker httpEndpointChecker;
+public class HttpEntryPoint extends Http403ForbiddenEntryPoint {
 
     @Override
     public void commence(
@@ -24,11 +25,16 @@ public class HttpForbiddenEntryPoint extends Http403ForbiddenEntryPoint {
         HttpServletResponse response,
         AuthenticationException exception
     ) throws IOException {
-        response.setContentType(ContentType.APPLICATION_JSON.toString());
-        if (!httpEndpointChecker.existsEndpoint(request)) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "The requested endpoint does not exist.");
+        if (response.getStatus() != HttpServletResponse.SC_FORBIDDEN) {
             return;
         }
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You do not have access to this resource.");
+        log.debug("403 entry point overriding class called. Returning 401 with a message to the client.");
+        response.setContentType(ContentType.APPLICATION_JSON.toString());
+        String json = new ObjectMapper().writeValueAsString(
+            new ErrorResponse("401", "You are not authorized to access this resource."));
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().write(json);
+        response.flushBuffer();
     }
 }
+*/

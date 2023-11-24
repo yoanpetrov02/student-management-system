@@ -1,7 +1,5 @@
 package com.yoanpetrov.studentmanagementsystem.configurations;
 
-import com.yoanpetrov.studentmanagementsystem.security.AccessDeniedHandler;
-import com.yoanpetrov.studentmanagementsystem.security.HttpForbiddenEntryPoint;
 import com.yoanpetrov.studentmanagementsystem.security.JwtRequestFilter;
 import com.yoanpetrov.studentmanagementsystem.services.UserAccountService;
 import lombok.RequiredArgsConstructor;
@@ -37,8 +35,8 @@ public class SecurityConfiguration {
     private final JwtRequestFilter jwtRequestFilter;
     private final UserAccountService userAccountService;
     private final PasswordEncoder passwordEncoder;
-    private final AccessDeniedHandler accessDeniedHandler;
-    private final HttpForbiddenEntryPoint httpForbiddenEntryPoint;
+   /* private final AccessDeniedHandler accessDeniedHandler;
+    private final HttpEntryPoint httpEntryPoint;*/
 
     /**
      * Builds the {@code SecurityFilterChain} bean.
@@ -62,10 +60,10 @@ public class SecurityConfiguration {
             .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-            .exceptionHandling(
+            /*.exceptionHandling(
                 c -> c
-                    .authenticationEntryPoint(httpForbiddenEntryPoint)
-                    .accessDeniedHandler(accessDeniedHandler));
+                    .authenticationEntryPoint(httpEntryPoint)
+                    .accessDeniedHandler(accessDeniedHandler))*/;
         return http.build();
     }
 
