@@ -37,15 +37,21 @@ public class AuthenticationService implements CommandLineRunner {
         UserAccount adminAccount = UserAccount.builder()
             .username("admin")
             .password(passwordEncoder.encode("admin"))
-            .role(Role.ADMIN).build();
+            .role(Role.ADMIN)
+            .user(new User())
+            .build();
         UserAccount teacherAccount = UserAccount.builder()
             .username("teacher")
             .password(passwordEncoder.encode("teacher"))
-            .role(Role.TEACHER).build();
+            .role(Role.TEACHER)
+            .user(new User())
+            .build();
         UserAccount studentAccount = UserAccount.builder()
             .username("student")
             .password(passwordEncoder.encode("student"))
-            .role(Role.STUDENT).build();
+            .role(Role.STUDENT)
+            .user(new User())
+            .build();
         accountRepository.saveAll(List.of(adminAccount, teacherAccount, studentAccount));
     }
 
