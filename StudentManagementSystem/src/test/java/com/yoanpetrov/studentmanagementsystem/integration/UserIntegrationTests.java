@@ -52,6 +52,7 @@ public class UserIntegrationTests {
     @Order(1)
     @Test
     void testCreateUser() {
+        delete(BASE_URI).then().assertThat().statusCode(HttpStatus.OK.value());
         with().body(testUser)
             .when()
             .contentType(ContentType.JSON)

@@ -64,6 +64,18 @@ public class UserAccountService implements UserDetailsService {
     }
 
     /**
+     * Gets a single user account from the database by its username.
+     *
+     * @param username the username of the account.
+     * @return the account, if it exists.
+     * @throws ResourceNotFoundException if the account was not found.
+     */
+    public UserAccount getUserAccountByUsername(String username) {
+        return accountRepository.findByUsername(username)
+            .orElseThrow(() -> new ResourceNotFoundException("User account not found"));
+    }
+
+    /**
      * Gets a single user account from the database by its id.
      *
      * @param id the id of the account.

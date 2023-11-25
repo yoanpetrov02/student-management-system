@@ -9,7 +9,6 @@ import com.yoanpetrov.studentmanagementsystem.dto.AuthenticationResponse;
 import com.yoanpetrov.studentmanagementsystem.security.Role;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -18,36 +17,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 /**
  * Authentication service. User to register and authenticate users.
  */
 @RequiredArgsConstructor
 @Service
-public class AuthenticationService implements CommandLineRunner {
+public class AuthenticationService {
 
     private final UserAccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-
-    @Override
-    public void run(String... args) {
-        UserAccount adminAccount = UserAccount.builder()
-            .username("admin")
-            .password(passwordEncoder.encode("admin"))
-            .role(Role.ADMIN).build();
-        UserAccount teacherAccount = UserAccount.builder()
-            .username("teacher")
-            .password(passwordEncoder.encode("teacher"))
-            .role(Role.TEACHER).build();
-        UserAccount studentAccount = UserAccount.builder()
-            .username("student")
-            .password(passwordEncoder.encode("student"))
-            .role(Role.STUDENT).build();
-        accountRepository.saveAll(List.of(adminAccount, teacherAccount, studentAccount));
-    }
 
     /**
      * Checks whether a user account exists in the database.

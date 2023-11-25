@@ -56,6 +56,7 @@ public class AccountIntegrationTests {
     @Order(1)
     @Test
     void testCreateAccount() {
+        delete(BASE_URI).then().assertThat().statusCode(HttpStatus.OK.value());
         with().body(testUserAccount)
             .when()
             .contentType(ContentType.JSON)
