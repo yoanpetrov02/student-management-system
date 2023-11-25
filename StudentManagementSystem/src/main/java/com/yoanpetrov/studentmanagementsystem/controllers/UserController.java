@@ -4,6 +4,7 @@ import com.yoanpetrov.studentmanagementsystem.entities.Course;
 import com.yoanpetrov.studentmanagementsystem.entities.User;
 import com.yoanpetrov.studentmanagementsystem.mappers.UserMapper;
 import com.yoanpetrov.studentmanagementsystem.dto.UserDto;
+import com.yoanpetrov.studentmanagementsystem.services.AuthenticationCheckerService;
 import com.yoanpetrov.studentmanagementsystem.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class UserController {
     private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
     private final UserService userService;
+    private final AuthenticationCheckerService authenticationCheckerService;
     private final UserMapper userMapper;
 
     /**
@@ -120,6 +122,7 @@ public class UserController {
      * @return 200 and the changed user if the action was successful,
      * 404 if the user was not found.
      */
+    @PreAuthorize("hasRole('ADMIN') or @authenticationCheckerService.isTheSameAsAuthenticatedUser(#id)")
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(
         @PathVariable Long id,

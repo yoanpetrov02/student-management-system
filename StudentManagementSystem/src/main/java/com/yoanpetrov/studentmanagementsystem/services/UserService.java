@@ -93,7 +93,6 @@ public class UserService {
      * @return the updated user.
      * @throws ResourceNotFoundException if the user was not found.
      */
-    @PostAuthorize("returnObject.userAccount.username == authentication.principal.username or hasRole('ADMIN')")
     public User updateUser(Long id, User userDetails) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("User not found"));
