@@ -1,4 +1,3 @@
-/*
 package com.yoanpetrov.studentmanagementsystem.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,4 +39,3 @@ public class AccessDeniedHandler extends AccessDeniedHandlerImpl {
         response.flushBuffer();
     }
 }
-*/

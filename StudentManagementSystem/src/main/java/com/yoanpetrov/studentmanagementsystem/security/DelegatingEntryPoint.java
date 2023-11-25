@@ -1,4 +1,3 @@
-/*
 package com.yoanpetrov.studentmanagementsystem.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.entity.ContentType;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -17,7 +16,7 @@ import java.io.IOException;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class HttpEntryPoint extends Http403ForbiddenEntryPoint {
+public class DelegatingEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(
@@ -37,4 +36,3 @@ public class HttpEntryPoint extends Http403ForbiddenEntryPoint {
         response.flushBuffer();
     }
 }
-*/
