@@ -6,7 +6,6 @@ import com.yoanpetrov.studentmanagementsystem.entities.User;
 import com.yoanpetrov.studentmanagementsystem.repositories.CourseRepository;
 import com.yoanpetrov.studentmanagementsystem.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

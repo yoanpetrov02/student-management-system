@@ -54,10 +54,7 @@ public class CourseController {
      * 200 and the course if it was found.
      */
     @GetMapping("/{id}")
-    @PreAuthorize(
-        "hasAnyRole('ADMIN', 'TEACHER') " +
-        "or @authenticationCheckerService.isUserEnrolledInCourse(#id)"
-    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER') or @authenticationCheckerService.isUserEnrolledInCourse(#id)")
     public ResponseEntity<Course> getCourseById(@PathVariable Long id) {
         LOG.debug("Getting course with id {}", id);
         Course course = courseService.getCourseById(id);
@@ -73,10 +70,7 @@ public class CourseController {
      * 404 if the course was not found.
      */
     @GetMapping("/{id}/users")
-    @PreAuthorize(
-        "hasAnyRole('ADMIN', 'TEACHER') " +
-        "or @authenticationCheckerService.isUserEnrolledInCourse(#id)"
-    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER') or @authenticationCheckerService.isUserEnrolledInCourse(#id)")
     public ResponseEntity<?> getAllCourseUsers(@PathVariable Long id) {
         LOG.debug("Getting all users in course with id {}", id);
         List<User> users = courseService.getAllCourseUsers(id);
@@ -111,8 +105,7 @@ public class CourseController {
      * 404 if the user or the course weren't found.
      */
     @PostMapping("/{courseId}/users/{userId}")
-    @PreAuthorize(
-        "hasRole('ADMIN') " +
+    @PreAuthorize("hasRole('ADMIN') " +
         "or (hasRole('TEACHER') and @authenticationCheckerService.isUserEnrolledInCourse(#courseId)) " +
         "or @authenticationCheckerService.doUserIdsMatch(#userId)"
     )
@@ -134,8 +127,7 @@ public class CourseController {
      * 404 if the course was not found.
      */
     @PutMapping("/{id}")
-    @PreAuthorize(
-        "hasRole('ADMIN') " +
+    @PreAuthorize("hasRole('ADMIN') " +
         "or (hasRole('TEACHER') and @authenticationCheckerService.isUserEnrolledInCourse(#id))"
     )
     public ResponseEntity<Course> updateCourse(
@@ -185,8 +177,7 @@ public class CourseController {
      * 404 if the user or the course weren't found.
      */
     @DeleteMapping("/{courseId}/users/{userId}")
-    @PreAuthorize(
-        "hasRole('ADMIN') " +
+    @PreAuthorize("hasRole('ADMIN') " +
         "or (hasRole('TEACHER') and @authenticationCheckerService.isUserEnrolledInCourse(#courseId)) " +
         "or @authenticationCheckerService.doUserIdsMatch(#userId)"
     )

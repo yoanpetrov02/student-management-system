@@ -4,7 +4,6 @@ import com.yoanpetrov.studentmanagementsystem.entities.Course;
 import com.yoanpetrov.studentmanagementsystem.entities.User;
 import com.yoanpetrov.studentmanagementsystem.mappers.UserMapper;
 import com.yoanpetrov.studentmanagementsystem.dto.UserDto;
-import com.yoanpetrov.studentmanagementsystem.services.AuthenticationCheckerService;
 import com.yoanpetrov.studentmanagementsystem.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,6 @@ public class UserController {
     private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
     private final UserService userService;
-    private final AuthenticationCheckerService authenticationCheckerService;
     private final UserMapper userMapper;
 
     /**
@@ -71,6 +69,7 @@ public class UserController {
      * 404 if the user was not found.
      */
     @GetMapping("/{id}/courses")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER') or @authenticationCheckerService.doUserIdsMatch(#id)")
     public ResponseEntity<?> getAllUserCourses(@PathVariable Long id) {
         LOG.debug("Getting all courses of user with id {}", id);
         List<Course> courses = userService.getAllUserCourses(id);
@@ -105,6 +104,10 @@ public class UserController {
      * 404 if the user or the course weren't found.
      */
     @PostMapping("/{userId}/courses/{courseId}")
+    @PreAuthorize("hasRole('ADMIN') " +
+        "or (hasRole('TEACHER') and @authenticationCheckerService.isUserEnrolledInCourse(#courseId)) " +
+        "or @authenticationCheckerService.doUserIdsMatch(#userId)"
+    )
     public ResponseEntity<Course> addCourseToUser(
         @PathVariable Long userId,
         @PathVariable Long courseId
@@ -122,8 +125,8 @@ public class UserController {
      * @return 200 and the changed user if the action was successful,
      * 404 if the user was not found.
      */
-    @PreAuthorize("hasRole('ADMIN') or @authenticationCheckerService.isTheSameAsAuthenticatedUser(#id)")
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or @authenticationCheckerService.doUserIdsMatch(#id)")
     public ResponseEntity<User> updateUser(
         @PathVariable Long id,
         @Valid @RequestBody UserDto userDetailsDto
@@ -171,6 +174,10 @@ public class UserController {
      * 404 if the user or the course weren't found.
      */
     @DeleteMapping("/{userId}/courses/{courseId}")
+    @PreAuthorize("hasRole('ADMIN') " +
+        "or (hasRole('TEACHER') and @authenticationCheckerService.isUserEnrolledInCourse(#courseId)) " +
+        "or @authenticationCheckerService.doUserIdsMatch(#userId)"
+    )
     public ResponseEntity<Course> removeCourseFromUser(
         @PathVariable Long userId,
         @PathVariable Long courseId
