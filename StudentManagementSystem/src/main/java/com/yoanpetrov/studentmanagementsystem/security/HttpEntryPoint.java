@@ -16,7 +16,7 @@ import java.io.IOException;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class DelegatingEntryPoint implements AuthenticationEntryPoint {
+public class HttpEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(
@@ -24,9 +24,6 @@ public class DelegatingEntryPoint implements AuthenticationEntryPoint {
         HttpServletResponse response,
         AuthenticationException exception
     ) throws IOException {
-        if (response.getStatus() != HttpServletResponse.SC_FORBIDDEN) {
-            return;
-        }
         log.debug("403 entry point overriding class called. Returning 401 with a message to the client.");
         response.setContentType(ContentType.APPLICATION_JSON.toString());
         String json = new ObjectMapper().writeValueAsString(

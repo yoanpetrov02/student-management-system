@@ -53,6 +53,7 @@ public class CourseIntegrationTests {
     @Order(1)
     @Test
     void testCreateCourse() {
+        delete(BASE_URI).then().assertThat().statusCode(HttpStatus.OK.value());
         with().body(testCourse)
             .when()
             .contentType(ContentType.JSON)
