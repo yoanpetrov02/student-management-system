@@ -97,7 +97,6 @@ public class CourseService {
         course.setName(courseDetails.getName());
         course.setDescription(courseDetails.getDescription());
         course.setMaxCapacity(courseDetails.getMaxCapacity());
-        course.setNumberOfStudents(courseDetails.getNumberOfStudents());
 
         return courseRepository.save(course);
     }

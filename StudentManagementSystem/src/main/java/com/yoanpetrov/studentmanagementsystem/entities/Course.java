@@ -26,7 +26,6 @@ public class Course {
     private String name;
     private String description;
     private int maxCapacity;
-    private int numberOfStudents;
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
@@ -37,13 +36,20 @@ public class Course {
     private List<User> users = new ArrayList<>();
 
     /**
+     * Returns the number of students in the users list of the course.
+     */
+    public int getNumberOfStudents() {
+        return users.size();
+    }
+
+    /**
      * Adds a {@code User} to the course.
      *
      * @param user the user to be added.
      * @throws ResourceConflictException if the course is full or if the user already exists in the course.
      */
     public void addUser(User user) {
-        if (numberOfStudents == maxCapacity) {
+        if (users.size() == maxCapacity) {
             throw new ResourceConflictException("The course is full");
         }
         if (users.contains(user)) {
@@ -51,7 +57,6 @@ public class Course {
         }
         users.add(user);
         user.getCourses().add(this);
-        numberOfStudents++;
     }
 
     /**
@@ -65,6 +70,5 @@ public class Course {
             throw new ResourceConflictException("The user is not present in the course");
         }
         user.getCourses().remove(this);
-        numberOfStudents--;
     }
 }

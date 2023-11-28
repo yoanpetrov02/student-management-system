@@ -111,7 +111,6 @@ public class CourseIntegrationTests {
             .post(BASE_URI + "/1/users/1").then()
             .assertThat()
             .statusCode(HttpStatus.OK.value());
-        testCourse.setNumberOfStudents(testCourse.getNumberOfStudents() + 1);
     }
 
     @Order(6)
