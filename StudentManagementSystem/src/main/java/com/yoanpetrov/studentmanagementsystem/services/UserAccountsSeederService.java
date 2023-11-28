@@ -24,6 +24,9 @@ public class UserAccountsSeederService implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        if (accountsAlreadyExisting()) {
+            return;
+        }
         log.debug("Seeding accounts in the database.");
         UserAccount adminAccount = UserAccount.builder()
             .username("admin")
@@ -44,5 +47,11 @@ public class UserAccountsSeederService implements CommandLineRunner {
             .user(new User())
             .build();
         repository.saveAll(List.of(adminAccount, teacherAccount, studentAccount));
+    }
+
+    private boolean accountsAlreadyExisting() {
+        return repository.existsByUsername("admin")
+            || repository.existsByUsername("teacher")
+            || repository.existsByUsername("student");
     }
 }
